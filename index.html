@@ -16,29 +16,55 @@
         </header>
 
         <main>
-            <section id="vista-auth" class="space-y-4">
+            <section id="vista-login" class="space-y-4">
                 <h2 class="text-sm font-medium text-gray-700 uppercase tracking-wider text-center mb-6">Ingreso al Estudio</h2>
                 
                 <div class="space-y-3">
                     <div>
                         <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Correo Electrónico</label>
-                        <input type="email" id="auth-email" placeholder="ejemplo@correo.com" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
+                        <input type="email" id="login-email" placeholder="ejemplo@correo.com" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Contraseña</label>
-                        <input type="password" id="auth-password" placeholder="Mínimo 6 caracteres" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
+                        <input type="password" id="login-password" placeholder="Tu contraseña" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
                     </div>
                 </div>
 
-                <p id="auth-error" class="text-red-500 text-xs text-center hidden"></p>
-                <p id="auth-success" class="text-green-600 text-xs text-center hidden"></p>
+                <p id="login-error" class="text-red-500 text-xs text-center hidden"></p>
 
                 <div class="pt-4 space-y-2">
                     <button type="button" onclick="iniciarSesion()" class="w-full bg-black text-white text-sm tracking-wider uppercase py-3 rounded-lg hover:bg-gray-800 transition">
                         Iniciar Sesión
                     </button>
-                    <button type="button" onclick="registrarUsuario()" class="w-full bg-white text-gray-600 border border-gray-200 text-sm tracking-wider uppercase py-3 rounded-lg hover:bg-gray-50 transition">
+                    <button type="button" onclick="irAPanelRegistro()" class="w-full bg-white text-gray-600 border border-gray-200 text-sm tracking-wider uppercase py-3 rounded-lg hover:bg-gray-50 transition">
                         Crear Cuenta Nueva
+                    </button>
+                </div>
+            </section>
+
+            <section id="vista-registro" class="space-y-4 hidden">
+                <h2 class="text-sm font-medium text-gray-700 uppercase tracking-wider text-center mb-6">Registro de Nuevo Usuario</h2>
+                
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Elige un Correo Electrónico</label>
+                        <input type="email" id="reg-email" placeholder="usuario@correo.com" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Crea una Contraseña</label>
+                        <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
+                    </div>
+                </div>
+
+                <p id="reg-error" class="text-red-500 text-xs text-center hidden"></p>
+                <p id="reg-success" class="text-green-600 text-xs text-center hidden"></p>
+
+                <div class="pt-4 space-y-2">
+                    <button type="button" onclick="registrarUsuario()" class="w-full bg-emerald-600 text-white text-sm tracking-wider uppercase py-3 rounded-lg hover:bg-emerald-700 transition shadow-sm">
+                        Confirmar Registro y Registrarse
+                    </button>
+                    <button type="button" onclick="irAPanelLogin()" class="w-full bg-white text-gray-400 text-xs tracking-wider uppercase py-2 hover:text-gray-600 transition text-center block">
+                        ← Volver a Iniciar Sesión
                     </button>
                 </div>
             </section>
@@ -58,7 +84,7 @@
                     <button type="button" onclick="mostrarTest()" class="w-full bg-black text-white text-sm tracking-wider uppercase py-3 rounded-lg hover:bg-gray-800 transition shadow-md">
                         Comenzar Evaluación
                     </button>
-                    <button type="button" onclick="cerrarSesion()" class="w-full bg-gray-100 text-gray-500 text-xs tracking-wider uppercase py-2 rounded-lg hover:bg-gray-200 transition">
+                    <button type="button" onclick="cerrarSesion()" class="w-full bg-gray-100 text-gray-500 text-xs tracking-wider uppercase py-2 rounded-lg hover:bg-200 transition">
                         Cerrar Sesión
                     </button>
                 </div>
@@ -97,40 +123,53 @@
         try {
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         } catch (e) {
-            alert("Error al conectar las llaves de Supabase: " + e.message);
+            alert("Error al conectar con Supabase: " + e.message);
         }
 
+        // --- SISTEMA DE NAVEGACIÓN DE PANELES ---
         function irAVista(idVista) {
-            document.getElementById('vista-auth').classList.add('hidden');
+            document.getElementById('vista-login').classList.add('hidden');
+            document.getElementById('vista-registro').classList.add('hidden');
             document.getElementById('vista-dashboard').classList.add('hidden');
             document.getElementById('vista-test').classList.add('hidden');
             document.getElementById(idVista).classList.remove('hidden');
         }
 
-        // --- REGISTRO BLINDADO CON ALERTAS DE CONTROL ---
+        function irAPanelRegistro() {
+            // Limpia mensajes viejos antes de cambiar de panel
+            document.getElementById('reg-error').classList.add('hidden');
+            document.getElementById('reg-success').classList.add('hidden');
+            irAVista('vista-registro');
+        }
+
+        function irAPanelLogin() {
+            document.getElementById('login-error').classList.add('hidden');
+            irAVista('vista-login');
+        }
+
+        // --- ACCIÓN: REGISTRAR UN USUARIO DESDE SU PANEL PROPIO ---
         async function registrarUsuario() {
             try {
-                const email = document.getElementById('auth-email').value.trim();
-                const password = document.getElementById('auth-password').value;
-                const errorTxt = document.getElementById('auth-error');
-                const successTxt = document.getElementById('auth-success');
+                const email = document.getElementById('reg-email').value.trim();
+                const password = document.getElementById('reg-password').value;
+                const errorTxt = document.getElementById('reg-error');
+                const successTxt = document.getElementById('reg-success');
                 
                 errorTxt.classList.add('hidden');
                 successTxt.classList.add('hidden');
 
                 if(!email || !password) {
-                    errorTxt.textContent = "Por favor completa todos los campos.";
+                    errorTxt.textContent = "Por favor completa todos los campos del registro.";
                     errorTxt.classList.remove('hidden');
                     return;
                 }
 
                 if(password.length < 6) {
-                    errorTxt.textContent = "La contraseña debe tener mínimo 6 caracteres.";
+                    errorTxt.textContent = "La contraseña debe tener obligatoriamente mínimo 6 caracteres.";
                     errorTxt.classList.remove('hidden');
                     return;
                 }
 
-                // Llamada a Supabase
                 const { data, error } = await supabaseClient.auth.signUp({ email, password });
 
                 if (error) {
@@ -138,35 +177,41 @@
                     errorTxt.classList.remove('hidden');
                     alert("Supabase rechazó el registro: " + error.message);
                 } else if (data.user && data.session === null) {
-                    successTxt.textContent = "¡Usuario registrado! Por seguridad de Supabase, revisa tu correo electrónico para confirmar la cuenta.";
+                    successTxt.textContent = "¡Pre-registro exitoso! Revisa tu bandeja de correo para confirmar tu cuenta antes de iniciar sesión.";
                     successTxt.classList.remove('hidden');
-                    alert("¡Cuenta pre-creada! Te enviamos un correo de confirmación. Actívalo para poder iniciar sesión.");
+                    alert("Cuenta creada. Por favor, revisa tu correo electrónico para activarla.");
                 } else {
-                    successTxt.textContent = "¡Cuenta creada con éxito! Ya puedes iniciar sesión.";
+                    successTxt.textContent = "¡Cuenta creada de forma directa! Ya puedes regresar e iniciar sesión.";
                     successTxt.classList.remove('hidden');
-                    document.getElementById('auth-password').value = "";
-                    alert("¡Usuario creado con éxito!");
+                    document.getElementById('reg-email').value = "";
+                    document.getElementById('reg-password').value = "";
+                    alert("¡Usuario creado con éxito! Te redirigiremos al ingreso.");
+                    irAPanelLogin();
                 }
-            } catch (errorGeneral) {
-                alert("Ocurrió un error crítico en el código del botón: " + errorGeneral.message);
+            } catch (err) {
+                alert("Error crítico en el panel de registro: " + err.message);
             }
         }
 
-        // --- INICIO DE SESIÓN ---
+        // --- ACCIÓN: INICIAR SESIÓN ---
         async function iniciarSesion() {
             try {
-                const email = document.getElementById('auth-email').value.trim();
-                const password = document.getElementById('auth-password').value;
-                const errorTxt = document.getElementById('auth-error');
-                const successTxt = document.getElementById('auth-success');
+                const email = document.getElementById('login-email').value.trim();
+                const password = document.getElementById('login-password').value;
+                const errorTxt = document.getElementById('login-error');
                 
                 errorTxt.classList.add('hidden');
-                successTxt.classList.add('hidden');
+
+                if(!email || !password) {
+                    errorTxt.textContent = "Ingresa tu correo y contraseña.";
+                    errorTxt.classList.remove('hidden');
+                    return;
+                }
 
                 const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
                 if (error) {
-                    errorTxt.textContent = "Error: Credenciales incorrectas o correo sin confirmar.";
+                    errorTxt.textContent = "Error: Credenciales inválidas o correo electrónico sin verificar.";
                     errorTxt.classList.remove('hidden');
                 } else {
                     usuarioActual = data.user;
@@ -174,16 +219,16 @@
                     irAVista('vista-dashboard');
                 }
             } catch (err) {
-                alert("Error al iniciar sesión: " + err.message);
+                alert("Error al intentar iniciar sesión: " + err.message);
             }
         }
 
         async function cerrarSesion() {
             await supabaseClient.auth.signOut();
             usuarioActual = null;
-            document.getElementById('auth-email').value = "";
-            document.getElementById('auth-password').value = "";
-            irAVista('vista-auth');
+            document.getElementById('login-email').value = "";
+            document.getElementById('login-password').value = "";
+            irAVista('vista-login');
         }
 
         function mostrarTest() {
@@ -195,7 +240,7 @@
             irAVista('vista-dashboard');
         }
 
-        // --- OBTENER PREGUNTAS (CORREGIDO CON TU COLUMNA 'identificación') ---
+        // --- ACCIÓN: CARGAR PREGUNTAS ---
         async function obtenerPreguntas() {
             const container = document.getElementById('preguntas-container');
             container.innerHTML = '<p class="text-gray-400 text-sm text-center animate-pulse">Conectando con la base de datos...</p>';
@@ -240,7 +285,7 @@
 
                     const badge = document.createElement('span');
                     badge.className = "text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded mt-2 inline-block uppercase tracking-wide font-mono";
-                    badge.textContent = p.categorías || "Métrica"; // Ajustado a tu columna 'categorías'
+                    badge.textContent = p.categorías || "Métrica"; 
 
                     div.appendChild(label);
                     div.appendChild(select);
@@ -258,7 +303,7 @@
         }
 
         window.onload = function() {
-            irAVista('vista-auth');
+            irAVista('vista-login');
         };
     </script>
 </body>
