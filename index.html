@@ -22,22 +22,23 @@
                 <div class="space-y-3">
                     <div>
                         <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Correo Electrónico</label>
-                        <input type="email" id="auth-email" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
+                        <input type="email" id="auth-email" placeholder="ejemplo@correo.com" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Contraseña</label>
-                        <input type="password" id="auth-password" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
+                        <input type="password" id="auth-password" placeholder="Mínimo 6 caracteres" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
                     </div>
                 </div>
 
                 <p id="auth-error" class="text-red-500 text-xs text-center hidden"></p>
+                <p id="auth-success" class="text-green-600 text-xs text-center hidden"></p>
 
                 <div class="pt-4 space-y-2">
                     <button onclick="iniciarSesion()" class="w-full bg-black text-white text-sm tracking-wider uppercase py-3 rounded-lg hover:bg-gray-800 transition">
                         Iniciar Sesión
                     </button>
                     <button onclick="registrarUsuario()" class="w-full bg-white text-gray-600 border border-gray-200 text-sm tracking-wider uppercase py-3 rounded-lg hover:bg-gray-50 transition">
-                        Crear Cuenta nueva
+                        Crear Cuenta Nueva
                     </button>
                 </div>
             </section>
@@ -87,30 +88,36 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
-        // === CREDENCIALES DE TU PROYECTO CONECTADO ===
+        // URL limpia sin subrutas extrañas
         const SUPABASE_URL = 'https://qrwahxiakrrdzoizdyab.supabase.co'; 
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFyd2FoeGlha3JyZHpvaXpkeWFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3Njk0MDcsImV4cCI6MjA5NDM0NTQwN30.c-4IwsN44pAVd05PU6IavPeDOEm0Irb_kopXrOzS1Gc';
         
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        // Variables globales de control
+        let supabaseClient;
         let usuarioActual = null;
 
-        // --- CONTROL DE NAVEGACIÓN ENTRE VISTAS ---
+        // Inicialización segura del cliente
+        try {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        } catch (e) {
+            console.error("Error crítico de inicialización:", e);
+        }
+
         function irAVista(idVista) {
             document.getElementById('vista-auth').classList.add('hidden');
             document.getElementById('vista-dashboard').classList.add('hidden');
             document.getElementById('vista-test').classList.add('hidden');
-            
             document.getElementById(idVista).classList.remove('hidden');
         }
 
-        // --- AUTENTICACIÓN: REGISTRO ---
+        // --- REGISTRO DIRECTO DESDE LA INTERFAZ ---
         async function registrarUsuario() {
-            const email = document.getElementById('auth-email').value;
+            const email = document.getElementById('auth-email').value.trim();
             const password = document.getElementById('auth-password').value;
             const errorTxt = document.getElementById('auth-error');
+            const successTxt = document.getElementById('auth-success');
+            
             errorTxt.classList.add('hidden');
+            successTxt.classList.add('hidden');
 
             if(!email || !password) {
                 errorTxt.textContent = "Por favor completa todos los campos.";
@@ -118,27 +125,33 @@
                 return;
             }
 
+            // Llamada al registro público de Supabase
             const { data, error } = await supabaseClient.auth.signUp({ email, password });
 
             if (error) {
                 errorTxt.textContent = `Error: ${error.message}`;
                 errorTxt.classList.remove('hidden');
             } else {
-                alert("¡Cuenta creada con éxito! Ya puedes iniciar sesión.");
+                successTxt.textContent = "¡Cuenta creada con éxito! Intenta iniciar sesión ahora.";
+                successTxt.classList.remove('hidden');
+                document.getElementById('auth-password').value = "";
             }
         }
 
-        // --- AUTENTICACIÓN: LOGIN ---
+        // --- INICIO DE SESIÓN ---
         async function iniciarSesion() {
-            const email = document.getElementById('auth-email').value;
+            const email = document.getElementById('auth-email').value.trim();
             const password = document.getElementById('auth-password').value;
             const errorTxt = document.getElementById('auth-error');
+            const successTxt = document.getElementById('auth-success');
+            
             errorTxt.classList.add('hidden');
+            successTxt.classList.add('hidden');
 
             const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
             if (error) {
-                errorTxt.textContent = "Credenciales incorrectas o usuario no registrado.";
+                errorTxt.textContent = "Error: Credenciales incorrectas o correo sin confirmar.";
                 errorTxt.classList.remove('hidden');
             } else {
                 usuarioActual = data.user;
@@ -147,7 +160,6 @@
             }
         }
 
-        // --- AUTENTICACIÓN: LOGOUT ---
         async function cerrarSesion() {
             await supabaseClient.auth.signOut();
             usuarioActual = null;
@@ -156,20 +168,19 @@
             irAVista('vista-auth');
         }
 
-        // --- FLUJO DEL CUESTIONARIO ---
         function mostrarTest() {
             irAVista('vista-test');
-            obtenerPreguntas(); // Llama a la función que extrae las preguntas de Supabase
+            obtenerPreguntas();
         }
 
         function volverAlDashboard() {
             irAVista('vista-dashboard');
         }
 
-        // --- OBTENER PREGUNTAS DESDE SUPABASE ---
+        // --- OBTENER PREGUNTAS ---
         async function obtenerPreguntas() {
             const container = document.getElementById('preguntas-container');
-            container.innerHTML = '<p id="loading-text" class="text-gray-400 text-sm text-center animate-pulse">Conectando con la base de datos...</p>';
+            container.innerHTML = '<p class="text-gray-400 text-sm text-center animate-pulse">Conectando con la base de datos...</p>';
 
             const { data: preguntas, error } = await supabaseClient
                 .from('preguntas')
@@ -211,7 +222,7 @@
 
                     const badge = document.createElement('span');
                     badge.className = "text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded mt-2 inline-block uppercase tracking-wide font-mono";
-                    badge.textContent = p.categoria;
+                    badge.textContent = p.categoria || "Métrica";
 
                     div.appendChild(label);
                     div.appendChild(select);
@@ -228,7 +239,6 @@
             irAVista('vista-dashboard');
         }
 
-        // Al cargar la página por primera vez, asegurar que inicie en la pantalla de Login
         window.onload = function() {
             irAVista('vista-auth');
         };
