@@ -109,7 +109,7 @@
             document.getElementById(idVista).classList.remove('hidden');
         }
 
-        // --- REGISTRO DIRECTO DESDE LA INTERFAZ ---
+        // --- REGISTRO DIRECTO DESDE LA INTERFAZ (ACTUALIZADO) ---
         async function registrarUsuario() {
             const email = document.getElementById('auth-email').value.trim();
             const password = document.getElementById('auth-password').value;
@@ -125,14 +125,25 @@
                 return;
             }
 
-            // Llamada al registro público de Supabase
+            if(password.length < 6) {
+                errorTxt.textContent = "La contraseña debe tener mínimo 6 caracteres.";
+                errorTxt.classList.remove('hidden');
+                return;
+            }
+
+            // Intentar el registro en Supabase
             const { data, error } = await supabaseClient.auth.signUp({ email, password });
 
             if (error) {
-                errorTxt.textContent = `Error: ${error.message}`;
+                errorTxt.textContent = `Error de registro: ${error.message}`;
                 errorTxt.classList.remove('hidden');
+            } else if (data.user && data.session === null) {
+                // Esto pasa si Supabase todavía requiere confirmar el correo
+                successTxt.textContent = "¡Cuenta pre-registrada! Debido a la seguridad de Supabase, revisa tu correo electrónico para confirmar la cuenta antes de iniciar sesión.";
+                successTxt.classList.remove('hidden');
+                alert("Usuario creado. Revisa tu correo electrónico para activarlo.");
             } else {
-                successTxt.textContent = "¡Cuenta creada con éxito! Intenta iniciar sesión ahora.";
+                successTxt.textContent = "¡Cuenta creada con éxito! Ya puedes iniciar sesión.";
                 successTxt.classList.remove('hidden');
                 document.getElementById('auth-password').value = "";
             }
@@ -206,42 +217,4 @@
                     const select = document.createElement('select');
                     select.className = "w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 text-gray-600 focus:ring-1 focus:ring-black focus:outline-none";
                     
-                    const opciones = [
-                        { text: 'Nunca', value: '1' },
-                        { text: 'A veces', value: '2' },
-                        { text: 'Frecuentemente', value: '3' },
-                        { text: 'Siempre', value: '4' }
-                    ];
-
-                    opciones.forEach(opt => {
-                        const o = document.createElement('option');
-                        o.value = opt.value;
-                        o.textContent = opt.text;
-                        select.appendChild(o);
-                    });
-
-                    const badge = document.createElement('span');
-                    badge.className = "text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded mt-2 inline-block uppercase tracking-wide font-mono";
-                    badge.textContent = p.categoria || "Métrica";
-
-                    div.appendChild(label);
-                    div.appendChild(select);
-                    div.appendChild(badge);
-                    container.appendChild(div);
-                });
-            } else {
-                container.innerHTML = `<p class="text-amber-500 text-center text-sm">No se encontraron preguntas en la tabla.</p>`;
-            }
-        }
-
-        function enviarResultados() {
-            alert(`¡Test completado, ${usuarioActual.email}! Gracias por participar en el estudio de Mindbuy.`);
-            irAVista('vista-dashboard');
-        }
-
-        window.onload = function() {
-            irAVista('vista-auth');
-        };
-    </script>
-</body>
-</html>
+                    const opciones =
