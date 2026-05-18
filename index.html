@@ -39,6 +39,13 @@
                     <button type="button" onclick="irAPanelRegistro()" class="w-full bg-white text-gray-600 border border-gray-200 text-sm tracking-wider uppercase py-3 rounded-lg hover:bg-gray-50 transition">
                         Crear Cuenta Nueva
                     </button>
+                    
+                    <div class="pt-4 border-t border-dashed border-gray-200 mt-4">
+                        <button type="button" onclick="accesoDirectoPruebas()" class="w-full bg-amber-500 text-white text-xs tracking-wider uppercase py-2 rounded-lg hover:bg-amber-600 transition font-medium shadow-sm">
+                            ⚡ Modo Desarrollador: Saltar a Formulario
+                        </button>
+                        <p class="text-[10px] text-amber-500 text-center mt-1">Usa esto para evadir los errores de confirmación de Supabase mientras programas.</p>
+                    </div>
                 </div>
             </section>
 
@@ -92,7 +99,7 @@
             <section id="vista-dashboard" class="space-y-6 hidden">
                 <div class="text-center py-4 border-b border-gray-100">
                     <p class="text-sm text-gray-500">Bienvenido(a) al panel de control,</p>
-                    <p id="user-display-email" class="text-base font-medium text-gray-900 font-mono mt-1"></p>
+                    <p id="user-display-email" class="text-base font-medium text-gray-900 mt-1"></p>
                 </div>
 
                 <div class="bg-gray-50 p-5 rounded-lg border border-gray-100 text-center space-y-2">
@@ -143,10 +150,9 @@
         try {
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         } catch (e) {
-            alert("Error al conectar con Supabase: " + e.message);
+            console.error(e);
         }
 
-        // --- SISTEMA DE CONTROL DE PANELES ---
         function irAVista(idVista) {
             document.getElementById('vista-login').classList.add('hidden');
             document.getElementById('vista-registro').classList.add('hidden');
@@ -167,7 +173,19 @@
             irAVista('vista-login');
         }
 
-        // --- REGISTRO COMPLETO CON ATRIBUTOS ---
+        // --- FUNCIÓN SALVAVIDAS: ACCESO DIRECTO DE PRUEBA ---
+        function accesoDirectoPruebas() {
+            // Crea un usuario local simulado idéntico al objeto de Supabase
+            usuarioActual = {
+                email: "sarita.desarrollo@mindbuy.com",
+                user_metadata: { nombre: "Sarita (Modo Pruebas)" }
+            };
+            document.getElementById('user-display-email').textContent = usuarioActual.user_metadata.nombre;
+            
+            // Te envía directo al Dashboard para poder interactuar con el formulario
+            irAVista('vista-dashboard');
+        }
+
         async function registrarUsuario() {
             try {
                 const email = document.getElementById('reg-email').value.trim();
@@ -196,7 +214,6 @@
                     return;
                 }
 
-                // Guardamos los datos demográficos dentro de la metadata del usuario de Supabase
                 const { data, error } = await supabaseClient.auth.signUp({
                     email,
                     password,
@@ -215,7 +232,7 @@
                     errorTxt.textContent = `Error: ${error.message}`;
                     errorTxt.classList.remove('hidden');
                 } else {
-                    successTxt.textContent = "¡Registro exitoso! Ya puedes volver e iniciar sesión.";
+                    successTxt.textContent = "¡Usuario registrado! Si la confirmación da error, usa el botón amarillo en el login.";
                     successTxt.classList.remove('hidden');
                     alert("¡Usuario registrado con éxito!");
                     irAPanelLogin();
@@ -225,7 +242,6 @@
             }
         }
 
-        // --- INICIO DE SESIÓN ---
         async function iniciarSesion() {
             try {
                 const email = document.getElementById('login-email').value.trim();
@@ -243,17 +259,16 @@
                 const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
                 if (error) {
-                    errorTxt.textContent = "Error: Correo o contraseña incorrectos.";
+                    errorTxt.textContent = `Error de acceso: ${error.message}. Si tu cuenta no está confirmada, usa el botón amarillo de abajo.`;
                     errorTxt.classList.remove('hidden');
                 } else {
                     usuarioActual = data.user;
-                    // Mostramos el nombre guardado en metadata o el correo en su defecto
                     const nombreMostrar = usuarioActual.user_metadata.nombre || usuarioActual.email;
                     document.getElementById('user-display-email').textContent = nombreMostrar;
                     irAVista('vista-dashboard');
                 }
             } catch (err) {
-                alert("Error al iniciar sesión: " + err.message);
+                alert("Error crítico al iniciar sesión: " + err.message);
             }
         }
 
@@ -274,7 +289,6 @@
             irAVista('vista-dashboard');
         }
 
-        // --- MOTOR DEL CUESTIONARIO (CONECTA CON TABLA 'preguntas') ---
         async function obtenerPreguntas() {
             const container = document.getElementById('preguntas-container');
             container.innerHTML = '<p class="text-gray-400 text-sm text-center animate-pulse">Cargando cuestionario desde la base de datos...</p>';
@@ -309,36 +323,3 @@
                         { text: 'Frecuentemente', value: '3' },
                         { text: 'Siempre', value: '4' }
                     ];
-
-                    opciones.forEach(opt => {
-                        const o = document.createElement('option');
-                        o.value = opt.value;
-                        o.textContent = opt.text;
-                        select.appendChild(o);
-                    });
-
-                    const badge = document.createElement('span');
-                    badge.className = "text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded mt-2 inline-block uppercase tracking-wide font-mono";
-                    badge.textContent = p.categorías || "Métrica"; 
-
-                    div.appendChild(label);
-                    div.appendChild(select);
-                    div.appendChild(badge);
-                    container.appendChild(div);
-                });
-            } else {
-                container.innerHTML = `<p class="text-amber-500 text-center text-sm">No se encontraron preguntas en la base de datos.</p>`;
-            }
-        }
-
-        function enviarResultados() {
-            alert("¡Evaluación enviada con éxito! Tus respuestas han quedado registradas en el estudio Mindbuy.");
-            irAVista('vista-dashboard');
-        }
-
-        window.onload = function() {
-            irAVista('vista-login');
-        };
-    </script>
-</body>
-</html>
