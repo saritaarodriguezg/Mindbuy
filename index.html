@@ -1,288 +1,385 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mindbuy - Consumo Responsable</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import type { User } from "@supabase/supabase-js";
 
-    <style>
-        .font-body {
-            font-family: 'Montserrat', sans-serif;
-        }
-    </style>
-</head>
-<body style="background-color: #fffbf7;" class="text-gray-800 font-body min-h-screen flex flex-col p-4 md:p-8">
+type View = "login" | "register" | "dashboard" | "test";
 
-    <div id="contenedor-principal" class="max-w-xl mx-auto w-full bg-white pb-6 pt-4 px-6 md:pb-8 md:px-8 rounded-xl shadow-sm border border-orange-50/50 my-auto transition-all duration-300">
-        
-        <header class="mb-6 text-center flex flex-col items-center justify-center">
-            <img src="https://i.ibb.co/G4RqPLZL/logo.png" 
-                 alt="MindBuy - Investigación de Consumo Digital" 
-                 class="w-full max-w-md h-auto object-contain rounded-t-lg select-none pointer-events-none">
-            <p class="text-[10px] text-gray-400 mt-2 uppercase tracking-widest font-medium">Investigación de Consumo Digital</p>
-        </header>
+interface Question {
+  id: string;
+  texto_pregunta: string;
+  categorías: string;
+}
 
-        <main>
-            <section id="vista-login" class="space-y-4">
-                <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider text-center mb-6">Ingreso al Estudio</h2>
-                
-                <div class="space-y-3">
-                    <div>
-                        <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Correo Electrónico</label>
-                        <input type="email" id="login-email" placeholder="ejemplo@correo.com" class="w-full bg-gray-50/50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Contraseña</label>
-                        <input type="password" id="login-password" placeholder="Tu contraseña" class="w-full bg-gray-50/50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
-                    </div>
+export default function Home() {
+  const [currentView, setCurrentView] = useState<View>("login");
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const { toast } = useToast();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [occupation, setOccupation] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setCurrentUser(session?.user ?? null);
+      if (session?.user && currentView === "login") {
+        setCurrentView("dashboard");
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setCurrentUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [currentView]);
+
+  const loadQuestions = async () => {
+    try {
+      const { data, error } = await supabase.from("preguntas").select("*");
+      if (error) {
+        // Fallback mock questions if table doesn't exist
+        setQuestions([
+          { id: "1", texto_pregunta: "¿Con qué frecuencia compra en línea?", categorías: "Frecuencia" },
+          { id: "2", texto_pregunta: "¿Revisa reseñas antes de comprar?", categorías: "Comportamiento" },
+        ]);
+        return;
+      }
+      if (data) setQuestions(data);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } else {
+      setCurrentView("dashboard");
+    }
+    setLoading(false);
+  };
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { nombre: name, ocupacion: occupation } }
+    });
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Registro exitoso", description: "Iniciando sesión..." });
+      setCurrentView("dashboard");
+    }
+    setLoading(false);
+  };
+
+  const handleDevBypass = () => {
+    setCurrentUser({ id: "mock-dev", email: "sarita.desarrollo@mindbuy.com", user_metadata: { nombre: "Sarita Desarrollo" } } as unknown as User);
+    setCurrentView("test");
+    loadQuestions();
+  };
+
+  const startTest = () => {
+    loadQuestions();
+    setCurrentView("test");
+  };
+
+  const submitTest = () => {
+    toast({
+      title: "Evaluación completada",
+      description: "Tus respuestas han sido guardadas. ¡Gracias por participar!",
+    });
+    setCurrentView("dashboard");
+    setAnswers({});
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setCurrentUser(null);
+    setCurrentView("login");
+  };
+
+  // ── LOGIN ──────────────────────────────────────────────────────────────
+  if (currentView === "login") {
+    return (
+      <div style={{ backgroundColor: "#fffbf7" }} className="min-h-screen flex items-center justify-center p-4">
+        <div className="w-full max-w-md space-y-8">
+          <div className="text-center">
+            {/* Ruta optimizada para carpeta public */}
+            <img src="/mindbuy-logo.png" alt="Mindbuy Logo" className="mx-auto h-20 object-contain mb-4" />
+            <h2 className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">
+              Investigación de Consumo Digital
+            </h2>
+          </div>
+
+          <Card className="border-0 shadow-xl shadow-black/5 bg-white">
+            <CardContent className="pt-6">
+              <form onSubmit={handleLogin} className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Correo Electrónico</Label>
+                  <Input id="email" type="email" value={email} onChange={e => setEmail(e.target.value)} required data-testid="input-email" />
                 </div>
-
-                <p id="login-error" class="text-red-500 text-xs text-center hidden"></p>
-
-                <div class="pt-4 space-y-2">
-                    <button type="button" onclick="iniciarSesion()" class="w-full bg-black text-white text-sm tracking-wider uppercase py-3 rounded-lg hover:bg-gray-800 transition">
-                        Iniciar Sesión
-                    </button>
-                    <button type="button" onclick="irAPanelRegistro()" class="w-full bg-white text-gray-600 border border-gray-200 text-sm tracking-wider uppercase py-3 rounded-lg hover:bg-gray-50 transition">
-                        Crear Cuenta Nueva
-                    </button>
-                    
-                    <div class="pt-4 border-t border-dashed border-gray-200 mt-4">
-                        <button type="button" onclick="accesoDirectoPruebas()" style="background-color: #0C330C;" class="w-full text-white text-xs tracking-wider uppercase py-2 rounded-lg hover:opacity-90 transition font-medium shadow-sm">
-                            ♡ Modo Desarrollador: Ir Directo a Formulario
-                        </button>
-                    </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password">Contraseña</Label>
+                  <Input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} required data-testid="input-password" />
                 </div>
-            </section>
-
-            <section id="vista-registro" class="space-y-4 hidden">
-                <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider text-center mb-6">Registro de Nuevo Usuario</h2>
-                
-                <div class="space-y-3">
-                    <div>
-                        <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Nombre Completo</label>
-                        <input type="text" id="reg-nombre" placeholder="Nombre Apellido" class="w-full bg-gray-50/50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Ocupación</label>
-                        <input type="text" id="reg-ocupacion" placeholder="Ej: Estudiante" class="w-full bg-gray-50/50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Correo de Acceso</label>
-                        <input type="email" id="reg-email" placeholder="usuario@correo.com" class="w-full bg-gray-50/50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Contraseña</label>
-                        <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres" class="w-full bg-gray-50/50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
-                    </div>
+                <div className="space-y-3 pt-2">
+                  <Button type="submit" className="w-full uppercase tracking-wider font-semibold" disabled={loading} data-testid="button-login">
+                    {loading ? "Cargando..." : "Iniciar Sesión"}
+                  </Button>
+                  <Button type="button" variant="outline" className="w-full uppercase tracking-wider" onClick={() => setCurrentView("register")} data-testid="button-go-register">
+                    Crear Cuenta Nueva
+                  </Button>
                 </div>
+              </form>
+            </CardContent>
+          </Card>
 
-                <p id="reg-error" class="text-red-500 text-xs text-center hidden"></p>
+          <Button variant="ghost" className="w-full text-[#0C330C] hover:text-[#0C330C] hover:bg-[#0C330C]/10 border border-[#0C330C]/20" onClick={handleDevBypass} data-testid="button-dev-bypass">
+            ♡ Modo Desarrollador: Ir Directo a Formulario
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
-                <div class="pt-4 space-y-2">
-                    <button type="button" onclick="registrarUsuario()" class="w-full bg-emerald-600 text-white text-sm tracking-wider uppercase py-3 rounded-lg hover:bg-emerald-700 transition shadow-sm">
-                        Confirmar y Registrarse
-                    </button>
-                    <button type="button" onclick="irAPanelLogin()" class="w-full bg-white text-gray-400 text-xs tracking-wider uppercase py-2 hover:text-gray-600 transition text-center block">
-                        ← Volver a Iniciar Sesión
-                    </button>
+  // ── REGISTER ───────────────────────────────────────────────────────────
+  if (currentView === "register") {
+    return (
+      <div style={{ backgroundColor: "#fffbf7" }} className="min-h-screen flex items-center justify-center p-4">
+        <div className="w-full max-w-md space-y-8">
+          <div className="text-center">
+            <img src="/mindbuy-logo.png" alt="Mindbuy Logo" className="mx-auto h-20 object-contain mb-4" />
+            <h2 className="text-xs uppercase tracking-widest text-muted-foreground font-semibold">
+              Investigación de Consumo Digital
+            </h2>
+          </div>
+
+          <Card className="border-0 shadow-xl shadow-black/5 bg-white">
+            <CardContent className="pt-6">
+              <form onSubmit={handleRegister} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Nombre Completo</Label>
+                  <Input id="name" value={name} onChange={e => setName(e.target.value)} required data-testid="input-name" />
                 </div>
-            </section>
+                <div className="space-y-2">
+                  <Label htmlFor="occupation">Ocupación</Label>
+                  <Input id="occupation" value={occupation} onChange={e => setOccupation(e.target.value)} required data-testid="input-occupation" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="reg-email">Correo de Acceso</Label>
+                  <Input id="reg-email" type="email" value={email} onChange={e => setEmail(e.target.value)} required data-testid="input-reg-email" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="reg-password">Contraseña</Label>
+                  <Input id="reg-password" type="password" value={password} onChange={e => setPassword(e.target.value)} required data-testid="input-reg-password" />
+                </div>
+                <div className="space-y-3 pt-4">
+                  <Button type="submit" className="w-full uppercase tracking-wider font-semibold" disabled={loading} data-testid="button-register">
+                    {loading ? "Registrando..." : "Confirmar y Registrarse"}
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
 
-            <section id="vista-dashboard" class="hidden space-y-8">
-                
-                <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 space-y-3">
-                    <div class="flex justify-between items-center">
-                        <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Galería del Estudio</h3>
-                        <span class="text-[10px] bg-gray-200 text-gray-600 px-2 py-0.5 rounded font-mono">Mindbuy Media</span>
+          <div className="text-center">
+            <Button variant="link" onClick={() => setCurrentView("login")} className="text-muted-foreground" data-testid="link-back-login">
+              ← Volver a Iniciar Sesión
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── DASHBOARD ──────────────────────────────────────────────────────────
+  if (currentView === "dashboard") {
+    const displayName = currentUser?.user_metadata?.nombre || currentUser?.email?.split('@')[0] || "Participante";
+    const initial = displayName.charAt(0).toUpperCase();
+
+    return (
+      <div style={{ backgroundColor: "#fffbf7" }} className="min-h-screen py-12 px-4">
+        <div className="w-full max-w-4xl mx-auto space-y-8">
+          <header className="flex justify-between items-center mb-8">
+            <img src="/mindbuy-logo.png" alt="Mindbuy Logo" className="h-10 object-contain" />
+            <div className="flex items-center gap-4">
+              <span className="text-sm font-medium text-muted-foreground">{displayName}</span>
+              <Avatar>
+                <AvatarFallback className="bg-black text-white">{initial}</AvatarFallback>
+              </Avatar>
+            </div>
+          </header>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="space-y-8">
+              <Card className="overflow-hidden border-0 shadow-lg shadow-black/5 bg-white">
+                <CardContent className="p-0">
+                  <div className="bg-black p-4 text-white text-center">
+                    <h3 className="font-semibold tracking-wider text-sm uppercase">Video de Introducción</h3>
+                  </div>
+                  <div className="aspect-video">
+                    <iframe
+                      className="w-full h-full"
+                      src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                      title="Introducción"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-0 shadow-lg shadow-black/5 bg-white">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-semibold mb-2">Test de Hábitos de Compra</h3>
+                  <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
+                    Por favor, responde con sinceridad. Esta evaluación toma aproximadamente 3 minutos en completarse
+                    y nos ayudará a entender mejor los patrones de consumo digital.
+                  </p>
+                  <Button onClick={startTest} className="w-full bg-[#0C330C] hover:bg-[#0C330C]/90 text-white uppercase tracking-wider font-semibold py-6" data-testid="button-start-test">
+                    Comenzar Cuestionario →
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div>
+              <Card className="border-0 shadow-lg shadow-black/5 overflow-hidden h-full bg-white">
+                <CardContent className="p-0 h-full flex flex-col">
+                  <div className="bg-black p-4 text-white text-center shrink-0">
+                    <h3 className="font-semibold tracking-wider text-sm uppercase">Galería del Estudio</h3>
+                  </div>
+                  <div className="p-6 grow flex items-center justify-center bg-gray-50/50">
+                    <Carousel className="w-full max-w-sm">
+                      <CarouselContent>
+                        {[
+                          "https://images.unsplash.com/photo-1563013544-824ae1d704d3?w=800",
+                          "https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=800",
+                          "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800"
+                        ].map((src, i) => (
+                          <CarouselItem key={i}>
+                            <div className="aspect-square rounded-lg overflow-hidden border border-black/5 shadow-sm">
+                              <img src={src} alt={`Mindbuy Media ${i + 1}`} className="w-full h-full object-cover" />
+                            </div>
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <CarouselPrevious className="left-2" />
+                      <CarouselNext className="right-2" />
+                    </Carousel>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          <div className="flex justify-center pt-8">
+            <Button variant="ghost" onClick={handleLogout} className="text-muted-foreground" data-testid="button-logout">
+              Cerrar Sesión
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── TEST ───────────────────────────────────────────────────────────────
+  if (currentView === "test") {
+    return (
+      <div style={{ backgroundColor: "#fffbf7" }} className="min-h-screen py-12 px-4">
+        <div className="w-full max-w-2xl mx-auto space-y-8">
+          <header className="flex justify-between items-center mb-8">
+            <img src="/mindbuy-logo.png" alt="Mindbuy Logo" className="h-8 object-contain" />
+            <Button variant="ghost" size="sm" onClick={() => setCurrentView("dashboard")} data-testid="button-back-dashboard">
+              ← Volver al Panel
+            </Button>
+          </header>
+
+          <div className="space-y-2 mb-8">
+            <h1 className="text-3xl font-bold">Evaluación de Consumo</h1>
+            <p className="text-muted-foreground">Seleccione la opción que mejor describa sus hábitos.</p>
+          </div>
+
+          <div className="space-y-6">
+            {questions.length === 0 ? (
+              <Card className="p-12 text-center text-muted-foreground border-dashed bg-white">
+                Cargando preguntas...
+              </Card>
+            ) : (
+              questions.map((q, idx) => (
+                <Card key={q.id} className="border-0 shadow-md shadow-black/5 bg-white">
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between gap-4 mb-4">
+                      <div className="space-y-1">
+                        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Pregunta {idx + 1}</span>
+                        <h3 className="text-lg font-medium">{q.texto_pregunta}</h3>
+                      </div>
+                      <Badge variant="secondary" className="bg-[#0C330C]/10 text-[#0C330C] border-0 shrink-0">
+                        {q.categorías}
+                      </Badge>
                     </div>
-                    <div class="relative overflow-hidden bg-gray-200 rounded-lg h-64 md:h-80 flex items-center justify-center shadow-inner">
-                        <img id="slide-1" src="https://images.unsplash.com/photo-1563013544-824ae1d704d3?w=800&auto=format&fit=crop&q=80" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-100">
-                        <img id="slide-2" src="https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=800&auto=format&fit=crop&q=80" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0">
-                        <img id="slide-3" src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800&auto=format&fit=crop&q=80" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0">
-                        
-                        <button type="button" onclick="cambiarSlide(-1)" class="absolute left-4 bg-black/50 text-white p-2.5 rounded-full hover:bg-black/80 text-sm font-bold z-10">❮</button>
-                        <button type="button" onclick="cambiarSlide(1)" class="absolute right-4 bg-black/50 text-white p-2.5 rounded-full hover:bg-black/80 text-sm font-bold z-10">❯</button>
-                    </div>
-                </div>
+                    <Select
+                      value={answers[q.id]}
+                      onValueChange={v => setAnswers(prev => ({ ...prev, [q.id]: v }))}
+                    >
+                      <SelectTrigger data-testid={`select-${q.id}`}>
+                        <SelectValue placeholder="Seleccione una opción..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Nunca">Nunca</SelectItem>
+                        <SelectItem value="A veces">A veces</SelectItem>
+                        <SelectItem value="Frecuentemente">Frecuentemente</SelectItem>
+                        <SelectItem value="Siempre">Siempre</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </div>
 
-                <div class="text-center text-gray-400 animate-bounce text-xs uppercase tracking-widest font-light py-1">
-                    Desliza hacia abajo para ver más ↓
-                </div>
+          {questions.length > 0 && (
+            <div className="pt-6">
+              <Button
+                onClick={submitTest}
+                disabled={Object.keys(answers).length < questions.length}
+                className="w-full bg-[#0C330C] hover:bg-[#0C330C]/90 text-white uppercase tracking-wider font-semibold py-6 text-lg shadow-xl shadow-[#0C330C]/20"
+                data-testid="button-submit-test"
+              >
+                Finalizar Evaluación
+              </Button>
+              {Object.keys(answers).length < questions.length && (
+                <p className="text-center text-xs text-muted-foreground mt-3">
+                  Por favor, responda todas las preguntas para continuar.
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
-                <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 space-y-3">
-                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Video de Introducción</h3>
-                    <div class="relative overflow-hidden bg-black rounded-lg aspect-video shadow-sm">
-                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Presentación Mindbuy" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                </div>
-
-                <div class="bg-gray-50 p-5 rounded-xl border border-gray-100 flex items-center space-x-4">
-                    <div class="bg-gray-200 h-12 w-12 rounded-full flex items-center justify-center text-gray-600 uppercase font-bold tracking-wider text-sm shadow-sm" id="avatar-inicial">
-                        U
-                    </div>
-                    <div>
-                        <span class="text-[10px] bg-gray-200 text-gray-600 px-2 py-0.5 rounded font-mono uppercase tracking-wide">Participante Autenticado</span>
-                        <p id="user-display-email" class="text-base font-medium text-gray-900 mt-1"></p>
-                    </div>
-                </div>
-
-                <div class="bg-white p-6 rounded-xl border-2 border-gray-100 shadow-sm space-y-4">
-                    <div class="space-y-1">
-                        <h3 class="text-sm font-semibold text-gray-800 uppercase tracking-wider">Test de Hábitos de Compra</h3>
-                        <p class="text-xs text-gray-400 leading-relaxed">Por favor, responde con sinceridad. Esta evaluación toma aproximadamente 3 minutos y evalúa conductas en entornos comerciales digitales.</p>
-                    </div>
-
-                    <button type="button" onclick="mostrarTest()" style="background-color: #0C330C;" class="w-full text-white text-sm tracking-wider uppercase py-3 rounded-lg hover:opacity-90 transition font-medium shadow-md">
-                        Comenzar Cuestionario →
-                    </button>
-                </div>
-
-                <button type="button" onclick="cerrarSesion()" class="w-full bg-gray-100 text-gray-500 text-xs tracking-wider uppercase py-2.5 rounded-lg hover:bg-gray-200 transition text-center font-medium">
-                    Cerrar Sesión
-                </button>
-                
-            </section>
-
-            <section id="vista-test" class="hidden">
-                <div id="preguntas-container" class="space-y-6">
-                    <p id="loading-text" class="text-gray-400 text-sm text-center animate-pulse">Conectando con la base de datos...</p>
-                </div>
-
-                <div class="pt-8 space-y-2">
-                    <button type="button" onclick="enviarResultados()" class="w-full bg-black text-white text-sm tracking-wider uppercase py-3 rounded-lg hover:bg-gray-800 transition shadow-md">
-                        Finalizar Evaluación
-                    </button>
-                    <button type="button" onclick="volverAlDashboard()" class="w-full bg-white text-gray-400 text-xs tracking-wider uppercase py-2 hover:text-gray-600 transition text-center block">
-                        Volver al Panel
-                    </button>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <footer class="text-center text-xs text-gray-400 mt-8 mb-4">Proyecto de Investigación — Bogotá, D.C.</footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        const SUPABASE_URL = 'https://qrwahxiakrrdzoizdyab.supabase.co'; 
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFyd2FoeGlha3JyZHpvaXpkeWFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3Njk0MDcsImV4cCI6MjA5NDM0NTQwN30.c-4IwsN44pAVd05PU6IavPeDOEm0Irb_kopXrOzS1Gc';
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        let usuarioActual = null;
-
-        let slideActual = 1;
-        const totalSlides = 3;
-
-        function cambiarSlide(direccion) {
-            document.getElementById(`slide-${slideActual}`).classList.replace('opacity-100', 'opacity-0');
-            slideActual += direccion;
-            if (slideActual > totalSlides) slideActual = 1;
-            if (slideActual < 1) slideActual = totalSlides;
-            document.getElementById(`slide-${slideActual}`).classList.replace('opacity-0', 'opacity-100');
-        }
-
-        function irAVista(idVista) {
-            const contenedor = document.getElementById('contenedor-principal');
-            
-            if (idVista === 'vista-dashboard') {
-                contenedor.classList.replace('max-w-xl', 'max-w-3xl');
-                contenedor.classList.remove('my-auto');
-                contenedor.classList.add('my-4');
-            } else {
-                contenedor.classList.replace('max-w-3xl', 'max-w-xl');
-                contenedor.classList.remove('my-4');
-                contenedor.classList.add('my-auto');
-            }
-
-            ['vista-login', 'vista-registro', 'vista-dashboard', 'vista-test'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            document.getElementById(idVista).classList.remove('hidden');
-            
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        }
-
-        function irAPanelRegistro() { irAVista('vista-registro'); }
-        function irAPanelLogin() { irAVista('vista-login'); }
-
-        function accesoDirectoPruebas() {
-            usuarioActual = { email: "sarita.desarrollo@mindbuy.com", user_metadata: { nombre: "Sarita Rodriguez" } };
-            configurarPerfilYEntrar();
-        }
-
-        function configurarPerfilYEntrar() {
-            const nombre = usuarioActual.user_metadata.nombre || usuarioActual.email;
-            document.getElementById('user-display-email').textContent = nombre;
-            document.getElementById('avatar-inicial').textContent = nombre.charAt(0).toUpperCase();
-            irAVista('vista-dashboard');
-        }
-
-        async function registrarUsuario() {
-            const email = document.getElementById('reg-email').value;
-            const password = document.getElementById('reg-password').value;
-            const nombre = document.getElementById('reg-nombre').value;
-            const ocupacion = document.getElementById('reg-ocupacion').value;
-            const err = document.getElementById('reg-error');
-            
-            if(!email || !password || !nombre) {
-                err.textContent = "Campos obligatorios incompletos.";
-                err.classList.remove('hidden'); return;
-            }
-            
-            const { data, error } = await supabaseClient.auth.signUp({
-                email, password, options: { data: { nombre, ocupacion } }
-            });
-            
-            if (error) { alert("Error: " + error.message); }
-            else { alert("¡Registro exitoso!"); irAPanelLogin(); }
-        }
-
-        async function iniciarSesion() {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-            
-            if (error) {
-                document.getElementById('login-error').textContent = "Error: Credenciales incorrectas.";
-                document.getElementById('login-error').classList.remove('hidden');
-            } else {
-                usuarioActual = data.user;
-                configurarPerfilYEntrar();
-            }
-        }
-
-        function cerrarSesion() { location.reload(); }
-        function mostrarTest() { irAVista('vista-test'); obtenerPreguntas(); }
-        function volverAlDashboard() { irAVista('vista-dashboard'); }
-
-        async function obtenerPreguntas() {
-            const container = document.getElementById('preguntas-container');
-            container.innerHTML = '<p class="text-gray-400 text-sm text-center animate-pulse">Cargando cuestionario de tesis...</p>';
-            const { data: preguntas, error } = await supabaseClient.from('preguntas').select('*');
-            
-            if(error) {
-                container.innerHTML = "<p class='text-red-500 text-center text-sm'>Error al conectar con la tabla 'preguntas'.</p>";
-                return;
-            }
-            
-            container.innerHTML = "";
-            preguntas.forEach((p, i) => {
-                const div = document.createElement('div');
-                div.className = "border-b border-gray-100 pb-4";
-                div.innerHTML = `<label class="block text-sm font-medium text-gray-700 mb-2">${i+1}. ${p.texto_pregunta}</label>
-                <select class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-lg text-sm text-gray-600 focus:outline-none">
-                    <option>Nunca</option><option>A veces</option><option>Frecuentemente</option><option>Siempre</option>
-                </select>
-                <span class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded mt-2 inline-block uppercase tracking-wide font-mono">${p.categorías || 'Métrica'}</span>`;
-                container.appendChild(div);
-            });
-        }
-
-        function enviarResultados() { alert("Resultados guardados correctamente en la investigación. ¡Gracias!"); irAVista('vista-dashboard'); }
-        window.onload = function() { irAVista('vista-login'); };
-    </script>
-</body>
-</html>
+  return null;
+}
