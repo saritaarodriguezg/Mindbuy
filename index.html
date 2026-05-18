@@ -84,7 +84,7 @@
                     <button type="button" onclick="mostrarTest()" class="w-full bg-black text-white text-sm tracking-wider uppercase py-3 rounded-lg hover:bg-gray-800 transition shadow-md">
                         Comenzar Evaluación
                     </button>
-                    <button type="button" onclick="cerrarSesion()" class="w-full bg-gray-100 text-gray-500 text-xs tracking-wider uppercase py-2 rounded-lg hover:bg-200 transition">
+                    <button type="button" onclick="cerrarSesion()" class="w-full bg-gray-100 text-gray-500 text-xs tracking-wider uppercase py-2 rounded-lg hover:bg-gray-200 transition">
                         Cerrar Sesión
                     </button>
                 </div>
@@ -123,10 +123,10 @@
         try {
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         } catch (e) {
-            alert("Error al conectar con Supabase: " + e.message);
+            console.error("Error de inicialización Supabase:", e);
         }
 
-        // --- SISTEMA DE NAVEGACIÓN DE PANELES ---
+        // --- NAVEGACIÓN TOTALMENTE LIMPIA ---
         function irAVista(idVista) {
             document.getElementById('vista-login').classList.add('hidden');
             document.getElementById('vista-registro').classList.add('hidden');
@@ -136,7 +136,8 @@
         }
 
         function irAPanelRegistro() {
-            // Limpia mensajes viejos antes de cambiar de panel
+            // Esconder cualquier texto de error del login antes de irse
+            document.getElementById('login-error').classList.add('hidden');
             document.getElementById('reg-error').classList.add('hidden');
             document.getElementById('reg-success').classList.add('hidden');
             irAVista('vista-registro');
@@ -147,7 +148,7 @@
             irAVista('vista-login');
         }
 
-        // --- ACCIÓN: REGISTRAR UN USUARIO DESDE SU PANEL PROPIO ---
+        // --- FUNCIÓN DE REGISTRO ASOCIADA AL PANEL DE REGISTRO ---
         async function registrarUsuario() {
             try {
                 const email = document.getElementById('reg-email').value.trim();
@@ -165,7 +166,7 @@
                 }
 
                 if(password.length < 6) {
-                    errorTxt.textContent = "La contraseña debe tener obligatoriamente mínimo 6 caracteres.";
+                    errorTxt.textContent = "La contraseña debe tener mínimo 6 caracteres.";
                     errorTxt.classList.remove('hidden');
                     return;
                 }
@@ -173,27 +174,27 @@
                 const { data, error } = await supabaseClient.auth.signUp({ email, password });
 
                 if (error) {
-                    errorTxt.textContent = `Error de Supabase: ${error.message}`;
+                    errorTxt.textContent = `Error: ${error.message}`;
                     errorTxt.classList.remove('hidden');
                     alert("Supabase rechazó el registro: " + error.message);
                 } else if (data.user && data.session === null) {
-                    successTxt.textContent = "¡Pre-registro exitoso! Revisa tu bandeja de correo para confirmar tu cuenta antes de iniciar sesión.";
+                    successTxt.textContent = "¡Pre-registro exitoso! Revisa tu correo electrónico para confirmar la cuenta.";
                     successTxt.classList.remove('hidden');
-                    alert("Cuenta creada. Por favor, revisa tu correo electrónico para activarla.");
+                    alert("Cuenta creada. Revisa tu correo electrónico para activarla.");
                 } else {
-                    successTxt.textContent = "¡Cuenta creada de forma directa! Ya puedes regresar e iniciar sesión.";
+                    successTxt.textContent = "¡Cuenta creada con éxito!";
                     successTxt.classList.remove('hidden');
                     document.getElementById('reg-email').value = "";
                     document.getElementById('reg-password').value = "";
-                    alert("¡Usuario creado con éxito! Te redirigiremos al ingreso.");
+                    alert("¡Usuario creado! Ya puedes iniciar sesión.");
                     irAPanelLogin();
                 }
             } catch (err) {
-                alert("Error crítico en el panel de registro: " + err.message);
+                alert("Error crítico en registro: " + err.message);
             }
         }
 
-        // --- ACCIÓN: INICIAR SESIÓN ---
+        // --- FUNCIÓN DE INICIO DE SESIÓN ASOCIADA AL PANEL DE LOGIN ---
         async function iniciarSesion() {
             try {
                 const email = document.getElementById('login-email').value.trim();
@@ -203,7 +204,7 @@
                 errorTxt.classList.add('hidden');
 
                 if(!email || !password) {
-                    errorTxt.textContent = "Ingresa tu correo y contraseña.";
+                    errorTxt.textContent = "Por favor completa todos los campos.";
                     errorTxt.classList.remove('hidden');
                     return;
                 }
@@ -211,7 +212,7 @@
                 const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
                 if (error) {
-                    errorTxt.textContent = "Error: Credenciales inválidas o correo electrónico sin verificar.";
+                    errorTxt.textContent = "Error: Credenciales incorrectas o correo sin confirmar.";
                     errorTxt.classList.remove('hidden');
                 } else {
                     usuarioActual = data.user;
@@ -219,7 +220,7 @@
                     irAVista('vista-dashboard');
                 }
             } catch (err) {
-                alert("Error al intentar iniciar sesión: " + err.message);
+                alert("Error en login: " + err.message);
             }
         }
 
@@ -240,7 +241,6 @@
             irAVista('vista-dashboard');
         }
 
-        // --- ACCIÓN: CARGAR PREGUNTAS ---
         async function obtenerPreguntas() {
             const container = document.getElementById('preguntas-container');
             container.innerHTML = '<p class="text-gray-400 text-sm text-center animate-pulse">Conectando con la base de datos...</p>';
