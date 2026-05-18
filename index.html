@@ -32,8 +32,11 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
-        // === REEMPLAZA ESTOS DATOS CON TUS LLAVES REALES DE SUPABASE ===
-        const SUPABASE_URL = 'sb_publishable_XSIjXMnLdTcVsgpFEp48KQ_AXD4VC5O';
+        // === COLOCA AQUÍ TUS DATOS CORRECTOS ===
+        // 1. Aquí debes poner la dirección web que empieza con https://
+        const SUPABASE_URL = 'https://qrwahxiakrrdzoizdyab.supabase.co/rest/v1/'; 
+        
+        // 2. Tu llave anon 
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFyd2FoeGlha3JyZHpvaXpkeWFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3Njk0MDcsImV4cCI6MjA5NDM0NTQwN30.c-4IwsN44pAVd05PU6IavPeDOEm0Irb_kopXrOzS1Gc';
         
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -54,16 +57,13 @@
 
             if (preguntas && preguntas.length > 0) {
                 preguntas.forEach((p, index) => {
-                    // Creamos el contenedor de la pregunta
                     const div = document.createElement('div');
                     div.className = "border-b border-gray-100 pb-6";
 
-                    // Etiqueta de la pregunta
                     const label = document.createElement('label');
                     label.className = "block text-sm font-medium text-gray-700 mb-2";
                     label.textContent = `${index + 1}. ${p.texto_pregunta}`;
 
-                    // Selector de opciones
                     const select = document.createElement('select');
                     select.className = "w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 text-gray-600 focus:ring-1 focus:ring-black focus:outline-none";
                     
@@ -81,12 +81,10 @@
                         select.appendChild(o);
                     });
 
-                    // Etiqueta de categoría (Métrica de la tesis)
                     const badge = document.createElement('span');
                     badge.className = "text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded mt-2 inline-block uppercase tracking-wide font-mono";
                     badge.textContent = p.categoria;
 
-                    // Estructuramos los elementos
                     div.appendChild(label);
                     div.appendChild(select);
                     div.appendChild(badge);
@@ -101,12 +99,6 @@
             alert("¡Test completado! Gracias por participar en el estudio de Mindbuy.");
         }
 
-        window.onload = obtenerPreguntas;
-    </script>
-</body>
-</html>
-
-        // Ejecutar la carga cuando todo el HTML esté listo
         window.onload = obtenerPreguntas;
     </script>
 </body>
