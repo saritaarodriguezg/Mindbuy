@@ -6,7 +6,7 @@
     <title>Mindbuy - Consumo Responsable</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col justify-between p-4 md:p-8">
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col p-4 md:p-8">
 
     <div id="contenedor-principal" class="max-w-xl mx-auto w-full bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-100 my-auto transition-all duration-300">
         
@@ -42,7 +42,7 @@
                     
                     <div class="pt-4 border-t border-dashed border-gray-200 mt-4">
                         <button type="button" onclick="accesoDirectoPruebas()" style="background-color: #0C330C;" class="w-full text-white text-xs tracking-wider uppercase py-2 rounded-lg hover:opacity-90 transition font-medium shadow-sm">
-                            ⚡ Modo Desarrollador: Ir Directo a Formulario
+                            ♡ Modo Desarrollador: Ir Directo a Formulario
                         </button>
                     </div>
                 </div>
@@ -82,58 +82,59 @@
                 </div>
             </section>
 
-            <section id="vista-dashboard" class="hidden">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                    
-                    <div class="space-y-6">
-                        <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 space-y-3">
-                            <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Galería del Estudio</h3>
-                            <div class="relative overflow-hidden bg-gray-200 rounded-lg h-48 flex items-center justify-center">
-                                <img id="slide-1" src="https://images.unsplash.com/photo-1563013544-824ae1d704d3?w=500&auto=format&fit=crop&q=60" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-100">
-                                <img id="slide-2" src="https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=500&auto=format&fit=crop&q=60" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0">
-                                <img id="slide-3" src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=500&auto=format&fit=crop&q=60" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0">
-                                
-                                <button onclick="cambiarSlide(-1)" class="absolute left-2 bg-black/40 text-white p-1.5 rounded-full hover:bg-black/70 text-xs">❮</button>
-                                <button onclick="cambiarSlide(1)" class="absolute right-2 bg-black/40 text-white p-1.5 rounded-full hover:bg-black/70 text-xs">❯</button>
-                            </div>
-                        </div>
-
-                        <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 space-y-3">
-                            <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Video de Introducción</h3>
-                            <div class="relative overflow-hidden bg-black rounded-lg aspect-video flex items-center justify-center">
-                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Presentación Mindbuy" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                            </div>
-                        </div>
+            <section id="vista-dashboard" class="hidden space-y-8">
+                
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Galería del Estudio</h3>
+                        <span class="text-[10px] bg-gray-200 text-gray-600 px-2 py-0.5 rounded font-mono">Mindbuy Media</span>
                     </div>
-
-                    <div class="space-y-6">
-                        <div class="bg-gray-50 p-5 rounded-xl border border-gray-100 flex items-center space-x-4">
-                            <div class="bg-gray-200 h-12 w-12 rounded-full flex items-center justify-center text-gray-600 uppercase font-bold tracking-wider text-sm" id="avatar-inicial">
-                                U
-                            </div>
-                            <div>
-                                <span class="text-[10px] bg-gray-200 text-gray-600 px-2 py-0.5 rounded font-mono uppercase tracking-wide">Participante Activo</span>
-                                <p id="user-display-email" class="text-base font-medium text-gray-900 mt-1"></p>
-                            </div>
-                        </div>
-
-                        <div class="bg-white p-6 rounded-xl border-2 border-gray-100 shadow-sm space-y-4">
-                            <div class="space-y-1">
-                                <h3 class="text-sm font-semibold text-gray-800 uppercase tracking-wider">Test de Hábitos de Compra</h3>
-                                <p class="text-xs text-gray-400 leading-relaxed">Por favor, responde con sinceridad. Esta evaluación toma aproximadamente 3 minutos y evalúa conductas en entornos comerciales digitales.</p>
-                            </div>
-
-                            <button type="button" onclick="mostrarTest()" style="background-color: #0C330C;" class="w-full text-white text-sm tracking-wider uppercase py-3 rounded-lg hover:opacity-90 transition font-medium shadow-md">
-                                Comenzar Cuestionario →
-                            </button>
-                        </div>
-
-                        <button type="button" onclick="cerrarSesion()" class="w-full bg-gray-100 text-gray-500 text-xs tracking-wider uppercase py-2.5 rounded-lg hover:bg-gray-200 transition text-center font-medium">
-                            Cerrar Sesión
-                        </button>
+                    <div class="relative overflow-hidden bg-gray-200 rounded-lg h-64 md:h-80 flex items-center justify-center shadow-inner">
+                        <img id="slide-1" src="https://images.unsplash.com/photo-1563013544-824ae1d704d3?w=800&auto=format&fit=crop&q=80" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-100">
+                        <img id="slide-2" src="https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=800&auto=format&fit=crop&q=80" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0">
+                        <img id="slide-3" src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800&auto=format&fit=crop&q=80" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0">
+                        
+                        <button onclick="cambiarSlide(-1)" class="absolute left-4 bg-black/50 text-white p-2.5 rounded-full hover:bg-black/80 text-sm font-bold z-10">❮</button>
+                        <button onclick="cambiarSlide(1)" class="absolute right-4 bg-black/50 text-white p-2.5 rounded-full hover:bg-black/80 text-sm font-bold z-10">❯</button>
                     </div>
-
                 </div>
+
+                <div class="text-center text-gray-400 animate-bounce text-xs uppercase tracking-widest font-light py-1">
+                    Desliza hacia abajo para ver más ↓
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 space-y-3">
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Video de Introducción</h3>
+                    <div class="relative overflow-hidden bg-black rounded-lg aspect-video shadow-sm">
+                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Presentación Mindbuy" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 p-5 rounded-xl border border-gray-100 flex items-center space-x-4">
+                    <div class="bg-gray-200 h-12 w-12 rounded-full flex items-center justify-center text-gray-600 uppercase font-bold tracking-wider text-sm shadow-sm" id="avatar-inicial">
+                        U
+                    </div>
+                    <div>
+                        <span class="text-[10px] bg-gray-200 text-gray-600 px-2 py-0.5 rounded font-mono uppercase tracking-wide">Participante Autenticado</span>
+                        <p id="user-display-email" class="text-base font-medium text-gray-900 mt-1"></p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border-2 border-gray-100 shadow-sm space-y-4">
+                    <div class="space-y-1">
+                        <h3 class="text-sm font-semibold text-gray-800 uppercase tracking-wider">Test de Hábitos de Compra</h3>
+                        <p class="text-xs text-gray-400 leading-relaxed">Por favor, responde con sinceridad. Esta evaluación toma aproximadamente 3 minutos y evalúa conductas en entornos comerciales digitales.</p>
+                    </div>
+
+                    <button type="button" onclick="mostrarTest()" style="background-color: #0C330C;" class="w-full text-white text-sm tracking-wider uppercase py-3 rounded-lg hover:opacity-90 transition font-medium shadow-md">
+                        Comenzar Cuestionario →
+                    </button>
+                </div>
+
+                <button type="button" onclick="cerrarSesion()" class="w-full bg-gray-100 text-gray-500 text-xs tracking-wider uppercase py-2.5 rounded-lg hover:bg-gray-200 transition text-center font-medium">
+                    Cerrar Sesión
+                </button>
+                
             </section>
 
             <section id="vista-test" class="hidden">
@@ -153,7 +154,7 @@
         </main>
     </div>
 
-    <footer class="text-center text-xs text-gray-400 mt-8">Proyecto de Investigación — Bogotá, D.C.</footer>
+    <footer class="text-center text-xs text-gray-400 mt-8 mb-4">Proyecto de Investigación — Bogotá, D.C.</footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -162,7 +163,7 @@
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         let usuarioActual = null;
 
-        // --- MANEJO DEL CARRUSEL DE FOTOS ---
+        // MANEJO DEL CARRUSEL DE FOTOS
         let slideActual = 1;
         const totalSlides = 3;
 
@@ -177,21 +178,28 @@
         function irAVista(idVista) {
             const contenedor = document.getElementById('contenedor-principal');
             
-            // Adaptar el ancho de la ventana dependiendo del contenido para estética minimalista
+            // Si entra al Dashboard, expandimos el ancho y removemos el centrado vertical estricto para habilitar scroll suave hacia abajo
             if (idVista === 'vista-dashboard') {
-                contenedor.classList.replace('max-w-xl', 'max-w-5xl');
+                contenedor.classList.replace('max-w-xl', 'max-w-3xl');
+                contenedor.classList.remove('my-auto');
+                contenedor.classList.add('my-4');
             } else {
-                contenedor.classList.replace('max-w-5xl', 'max-w-xl');
+                contenedor.classList.replace('max-w-3xl', 'max-w-xl');
+                contenedor.classList.remove('my-4');
+                contenedor.classList.add('my-auto');
             }
 
             ['vista-login', 'vista-registro', 'vista-dashboard', 'vista-test'].forEach(id => document.getElementById(id).classList.add('hidden'));
             document.getElementById(idVista).classList.remove('hidden');
+            
+            // Regresa el scroll al inicio de la página automáticamente al cambiar de pantalla
+            window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
         function irAPanelRegistro() { irAVista('vista-registro'); }
         function irAPanelLogin() { irAVista('vista-login'); }
 
-        // MODO DESARROLLADOR ARREGLADO DIRECTO
+        // MODO DESARROLLADOR DIRECTO
         function accesoDirectoPruebas() {
             usuarioActual = { email: "sarita.desarrollo@mindbuy.com", user_metadata: { nombre: "Sarita Rodriguez" } };
             configurarPerfilYEntrar();
@@ -200,8 +208,7 @@
         function configurarPerfilYEntrar() {
             const nombre = usuarioActual.user_metadata.nombre || usuarioActual.email;
             document.getElementById('user-display-email').textContent = nombre;
-            // Pone la primera letra del nombre en el avatar de la derecha
-            document.getElementById('avatar-inicial').textContent = nombre.charAt(0).toUpperCase();
+            document.getElementById('avatar-inicial').textContent = fontLetraAvatar = nombre.charAt(0).toUpperCase();
             irAVista('vista-dashboard');
         }
 
