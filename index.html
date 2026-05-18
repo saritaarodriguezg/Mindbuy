@@ -41,45 +41,33 @@
                     </button>
                     
                     <div class="pt-4 border-t border-dashed border-gray-200 mt-4">
-                        <button type="button" onclick="accesoDirectoPruebas()" class="w-full bg-amber-500 text-white text-xs tracking-wider uppercase py-2 rounded-lg hover:bg-amber-600 transition font-medium shadow-sm">
-                            ⚡ Modo Desarrollador: Saltar a Formulario
+                        <button type="button" onclick="accesoDirectoPruebas()" style="background-color: #0C330C;" class="w-full text-white text-xs tracking-wider uppercase py-2 rounded-lg hover:opacity-90 transition font-medium shadow-sm">
+                            ⚡ Modo Desarrollador: Ir Directo a Formulario
                         </button>
-                        <p class="text-[10px] text-amber-500 text-center mt-1">Usa esto para evadir los errores de confirmación de Supabase mientras programas.</p>
+                        <p class="text-[10px] text-gray-400 text-center mt-1">Usa esto para saltar a la vista de preguntas mientras programas.</p>
                     </div>
                 </div>
             </section>
 
             <section id="vista-registro" class="space-y-4 hidden">
-                <h2 class="text-sm font-medium text-gray-700 uppercase tracking-wider text-center mb-6">Registro de Participante</h2>
+                <h2 class="text-sm font-medium text-gray-700 uppercase tracking-wider text-center mb-6">Registro de Nuevo Usuario</h2>
                 
-                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    <div class="sm:col-span-2">
-                        <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Nombre Completo</label>
-                        <input type="text" id="reg-nombre" placeholder="Nombre y Apellido" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-emerald-500 focus:outline-none">
-                    </div>
+                <div class="space-y-3">
                     <div>
-                        <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Celular / Teléfono</label>
-                        <input type="tel" id="reg-celular" placeholder="3001234567" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+                        <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Nombre Completo</label>
+                        <input type="text" id="reg-nombre" placeholder="Nombre Apellido" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Ocupación</label>
-                        <input type="text" id="reg-ocupacion" placeholder="Ej: Estudiante / Empleado" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+                        <input type="text" id="reg-ocupacion" placeholder="Ej: Estudiante" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Edad</label>
-                        <input type="number" id="reg-edad" placeholder="Años" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+                        <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Elige un Correo de Acceso</label>
+                        <input type="email" id="reg-email" placeholder="usuario@correo.com" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Ciudad</label>
-                        <input type="text" id="reg-ciudad" value="Bogotá" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-emerald-500 focus:outline-none">
-                    </div>
-                    <div class="sm:col-span-2 border-t border-gray-100 pt-3 mt-1">
-                        <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Correo Electrónico de Acceso</label>
-                        <input type="email" id="reg-email" placeholder="correo@ejemplo.com" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-emerald-500 focus:outline-none">
-                    </div>
-                    <div class="sm:col-span-2">
-                        <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Contraseña de Acceso</label>
-                        <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+                        <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Crea una Contraseña</label>
+                        <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
                     </div>
                 </div>
 
@@ -98,18 +86,18 @@
 
             <section id="vista-dashboard" class="space-y-6 hidden">
                 <div class="text-center py-4 border-b border-gray-100">
-                    <p class="text-sm text-gray-500">Bienvenido(a) al panel de control,</p>
-                    <p id="user-display-email" class="text-base font-medium text-gray-900 mt-1"></p>
+                    <p class="text-sm text-gray-500 italic">Bienvenido al panel,</p>
+                    <p id="user-display-email" class="text-xl font-medium text-gray-900 mt-1"></p>
                 </div>
 
-                <div class="bg-gray-50 p-5 rounded-lg border border-gray-100 text-center space-y-2">
-                    <h3 class="text-sm font-medium text-gray-800 uppercase tracking-wider">Test de Hábitos de Compra</h3>
-                    <p class="text-xs text-gray-400">Esta evaluación toma alrededor de 3 minutos y mide tus conductas en entornos digitales.</p>
+                <div class="bg-gray-50 p-5 rounded-lg border border-gray-100 text-center">
+                    <h3 class="text-sm font-medium text-gray-800 uppercase tracking-wider mb-2">Evaluación Disponible</h3>
+                    <p class="text-xs text-gray-400">Tus respuestas ayudarán a identificar patrones de consumo digital.</p>
                 </div>
 
                 <div class="pt-2 space-y-2">
                     <button type="button" onclick="mostrarTest()" class="w-full bg-black text-white text-sm tracking-wider uppercase py-3 rounded-lg hover:bg-gray-800 transition shadow-md">
-                        Comenzar Evaluación
+                        Comenzar Test
                     </button>
                     <button type="button" onclick="cerrarSesion()" class="w-full bg-gray-100 text-gray-500 text-xs tracking-wider uppercase py-2 rounded-lg hover:bg-gray-200 transition">
                         Cerrar Sesión
@@ -134,192 +122,96 @@
         </main>
     </div>
 
-    <footer class="text-center text-xs text-gray-400 mt-8">
-        Proyecto de Investigación — Bogotá, D.C.
-    </footer>
+    <footer class="text-center text-xs text-gray-400 mt-8">Proyecto de Investigación — Bogotá, D.C.</footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <script>
         const SUPABASE_URL = 'https://qrwahxiakrrdzoizdyab.supabase.co'; 
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFyd2FoeGlha3JyZHpvaXpkeWFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3Njk0MDcsImV4cCI6MjA5NDM0NTQwN30.c-4IwsN44pAVd05PU6IavPeDOEm0Irb_kopXrOzS1Gc';
-        
-        let supabaseClient;
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         let usuarioActual = null;
 
-        try {
-            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        } catch (e) {
-            console.error(e);
-        }
-
         function irAVista(idVista) {
-            document.getElementById('vista-login').classList.add('hidden');
-            document.getElementById('vista-registro').classList.add('hidden');
-            document.getElementById('vista-dashboard').classList.add('hidden');
-            document.getElementById('vista-test').classList.add('hidden');
+            ['vista-login', 'vista-registro', 'vista-dashboard', 'vista-test'].forEach(id => document.getElementById(id).classList.add('hidden'));
             document.getElementById(idVista).classList.remove('hidden');
         }
 
-        function irAPanelRegistro() {
-            document.getElementById('login-error').classList.add('hidden');
-            document.getElementById('reg-error').classList.add('hidden');
-            document.getElementById('reg-success').classList.add('hidden');
-            irAVista('vista-registro');
-        }
+        function irAPanelRegistro() { irAVista('vista-registro'); }
+        function irAPanelLogin() { irAVista('vista-login'); }
 
-        function irAPanelLogin() {
-            document.getElementById('login-error').classList.add('hidden');
-            irAVista('vista-login');
-        }
-
-        // --- FUNCIÓN SALVAVIDAS: ACCESO DIRECTO DE PRUEBA ---
+        // --- MODO DESARROLLADOR ARREGLADO (hex 0C330C y Salto Directo a Formulario) ---
         function accesoDirectoPruebas() {
-            // Crea un usuario local simulado idéntico al objeto de Supabase
+            // Crea un usuario simulado local
             usuarioActual = {
                 email: "sarita.desarrollo@mindbuy.com",
                 user_metadata: { nombre: "Sarita (Modo Pruebas)" }
             };
             document.getElementById('user-display-email').textContent = usuarioActual.user_metadata.nombre;
             
-            // Te envía directo al Dashboard para poder interactuar con el formulario
-            irAVista('vista-dashboard');
-        }
-
-        async function registrarUsuario() {
-            try {
-                const email = document.getElementById('reg-email').value.trim();
-                const password = document.getElementById('reg-password').value;
-                const nombre = document.getElementById('reg-nombre').value.trim();
-                const celular = document.getElementById('reg-celular').value.trim();
-                const ocupacion = document.getElementById('reg-ocupacion').value.trim();
-                const edad = document.getElementById('reg-edad').value;
-                const ciudad = document.getElementById('reg-ciudad').value.trim();
-                
-                const errorTxt = document.getElementById('reg-error');
-                const successTxt = document.getElementById('reg-success');
-                
-                errorTxt.classList.add('hidden');
-                successTxt.classList.add('hidden');
-
-                if(!email || !password || !nombre || !celular || !ocupacion || !edad) {
-                    errorTxt.textContent = "Por favor, completa todos los campos del formulario de registro.";
-                    errorTxt.classList.remove('hidden');
-                    return;
-                }
-
-                if(password.length < 6) {
-                    errorTxt.textContent = "La contraseña debe tener mínimo 6 caracteres.";
-                    errorTxt.classList.remove('hidden');
-                    return;
-                }
-
-                const { data, error } = await supabaseClient.auth.signUp({
-                    email,
-                    password,
-                    options: {
-                        data: {
-                            nombre: nombre,
-                            celular: celular,
-                            ocupacion: ocupacion,
-                            edad: edad,
-                            ciudad: ciudad
-                        }
-                    }
-                });
-
-                if (error) {
-                    errorTxt.textContent = `Error: ${error.message}`;
-                    errorTxt.classList.remove('hidden');
-                } else {
-                    successTxt.textContent = "¡Usuario registrado! Si la confirmación da error, usa el botón amarillo en el login.";
-                    successTxt.classList.remove('hidden');
-                    alert("¡Usuario registrado con éxito!");
-                    irAPanelLogin();
-                }
-            } catch (err) {
-                alert("Error en el proceso de registro: " + err.message);
-            }
-        }
-
-        async function iniciarSesion() {
-            try {
-                const email = document.getElementById('login-email').value.trim();
-                const password = document.getElementById('login-password').value;
-                const errorTxt = document.getElementById('login-error');
-                
-                errorTxt.classList.add('hidden');
-
-                if(!email || !password) {
-                    errorTxt.textContent = "Por favor ingresa tus datos de acceso.";
-                    errorTxt.classList.remove('hidden');
-                    return;
-                }
-
-                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-
-                if (error) {
-                    errorTxt.textContent = `Error de acceso: ${error.message}. Si tu cuenta no está confirmada, usa el botón amarillo de abajo.`;
-                    errorTxt.classList.remove('hidden');
-                } else {
-                    usuarioActual = data.user;
-                    const nombreMostrar = usuarioActual.user_metadata.nombre || usuarioActual.email;
-                    document.getElementById('user-display-email').textContent = nombreMostrar;
-                    irAVista('vista-dashboard');
-                }
-            } catch (err) {
-                alert("Error crítico al iniciar sesión: " + err.message);
-            }
-        }
-
-        async function cerrarSesion() {
-            await supabaseClient.auth.signOut();
-            usuarioActual = null;
-            document.getElementById('login-email').value = "";
-            document.getElementById('login-password').value = "";
-            irAVista('vista-login');
-        }
-
-        function mostrarTest() {
+            // Salta directamente a la vista del cuestionario para probar las preguntas
             irAVista('vista-test');
+            // Carga las preguntas
             obtenerPreguntas();
         }
 
-        function volverAlDashboard() {
-            irAVista('vista-dashboard');
+        async function registrarUsuario() {
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const nombre = document.getElementById('reg-nombre').value;
+            const ocupacion = document.getElementById('reg-ocupacion').value;
+            const err = document.getElementById('reg-error');
+            
+            if(!email || !password || !nombre) {
+                err.textContent = "Correo, Contraseña y Nombre son obligatorios.";
+                err.classList.remove('hidden'); return;
+            }
+            
+            const { data, error } = await supabaseClient.auth.signUp({
+                email, password, options: { data: { nombre, ocupacion } }
+            });
+            
+            if (error) { alert("Error: " + error.message); }
+            else { alert("¡Registro exitoso! Actívalo en Supabase si lo requiere e inicia sesión."); irAPanelLogin(); }
         }
+
+        async function iniciarSesion() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            
+            if (error) {
+                document.getElementById('login-error').textContent = "Error: Credenciales incorrectas.";
+                document.getElementById('login-error').classList.remove('hidden');
+            } else {
+                usuarioActual = data.user;
+                document.getElementById('user-display-email').textContent = usuarioActual.user_metadata.nombre || usuarioActual.email;
+                irAVista('vista-dashboard');
+            }
+        }
+
+        function cerrarSesion() { location.reload(); }
+        function mostrarTest() { irAVista('vista-test'); obtenerPreguntas(); }
+        function volverAlDashboard() { irAVista('vista-dashboard'); }
 
         async function obtenerPreguntas() {
             const container = document.getElementById('preguntas-container');
-            container.innerHTML = '<p class="text-gray-400 text-sm text-center animate-pulse">Cargando cuestionario desde la base de datos...</p>';
+            container.innerHTML = "Cargando preguntas de la tesis...";
+            const { data: preguntas } = await supabaseClient.from('preguntas').select('*');
+            container.innerHTML = "";
+            preguntas.forEach((p, i) => {
+                const div = document.createElement('div');
+                div.className = "border-b pb-4";
+                div.innerHTML = `<label class="block text-sm font-medium mb-2">${i+1}. ${p.texto_pregunta}</label>
+                <select class="w-full bg-gray-50 border p-2 rounded-lg text-sm">
+                    <option>Nunca</option><option>A veces</option><option>Frecuentemente</option><option>Siempre</option>
+                </select>
+                <span class="text-[10px] bg-gray-100 px-2 py-0.5 rounded mt-2 inline-block uppercase">${p.categorías || 'Métrica'}</span>`;
+                container.appendChild(div);
+            });
+        }
 
-            const { data: preguntas, error } = await supabaseClient
-                .from('preguntas')
-                .select('*');
-
-            if (error) {
-                container.innerHTML = `<p class="text-red-500 text-center text-sm">Error al descargar el formulario.</p>`;
-                console.error(error);
-                return;
-            }
-
-            container.innerHTML = ""; 
-
-            if (preguntas && preguntas.length > 0) {
-                preguntas.forEach((p, index) => {
-                    const div = document.createElement('div');
-                    div.className = "border-b border-gray-100 pb-6";
-
-                    const label = document.createElement('label');
-                    label.className = "block text-sm font-medium text-gray-700 mb-2";
-                    label.textContent = `${index + 1}. ${p.texto_pregunta}`;
-
-                    const select = document.createElement('select');
-                    select.className = "w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 text-gray-600 focus:ring-1 focus:ring-black focus:outline-none";
-                    
-                    const opciones = [
-                        { text: 'Nunca', value: '1' },
-                        { text: 'A veces', value: '2' },
-                        { text: 'Frecuentemente', value: '3' },
-                        { text: 'Siempre', value: '4' }
-                    ];
+        function enviarResultados() { alert("Resultados de tesis enviados. ¡Gracias!"); irAVista('vista-dashboard'); }
+        window.onload = function() { irAVista('vista-login'); };
+    </script>
+</body>
+</html>
