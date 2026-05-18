@@ -6,11 +6,11 @@
     <title>Mindbuy - Consumo Responsable</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col justify-between p-6 md:p-12">
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col justify-between p-4 md:p-8">
 
-    <div class="max-w-xl mx-auto w-full bg-white p-8 rounded-xl shadow-sm border border-gray-100 my-auto">
+    <div id="contenedor-principal" class="max-w-xl mx-auto w-full bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-100 my-auto transition-all duration-300">
         
-        <header class="mb-10 text-center">
+        <header class="mb-8 text-center">
             <h1 class="text-3xl font-light tracking-widest text-gray-900">MINDBUY</h1>
             <p class="text-xs text-gray-400 mt-2 uppercase tracking-wider">Identifica tus hábitos de compra digital</p>
         </header>
@@ -42,9 +42,8 @@
                     
                     <div class="pt-4 border-t border-dashed border-gray-200 mt-4">
                         <button type="button" onclick="accesoDirectoPruebas()" style="background-color: #0C330C;" class="w-full text-white text-xs tracking-wider uppercase py-2 rounded-lg hover:opacity-90 transition font-medium shadow-sm">
-                             Modo Desarrollador: Ir Directo a Formulario ♡
+                            ⚡ Modo Desarrollador: Ir Directo a Formulario
                         </button>
-                        <p class="text-[10px] text-gray-400 text-center mt-1">Usa esto para saltar a la vista de preguntas mientras programas.</p>
                     </div>
                 </div>
             </section>
@@ -62,17 +61,16 @@
                         <input type="text" id="reg-ocupacion" placeholder="Ej: Estudiante" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Elige un Correo de Acceso</label>
+                        <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Correo de Acceso</label>
                         <input type="email" id="reg-email" placeholder="usuario@correo.com" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Crea una Contraseña</label>
+                        <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Contraseña</label>
                         <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
                     </div>
                 </div>
 
                 <p id="reg-error" class="text-red-500 text-xs text-center hidden"></p>
-                <p id="reg-success" class="text-green-600 text-xs text-center hidden"></p>
 
                 <div class="pt-4 space-y-2">
                     <button type="button" onclick="registrarUsuario()" class="w-full bg-emerald-600 text-white text-sm tracking-wider uppercase py-3 rounded-lg hover:bg-emerald-700 transition shadow-sm">
@@ -84,24 +82,57 @@
                 </div>
             </section>
 
-            <section id="vista-dashboard" class="space-y-6 hidden">
-                <div class="text-center py-4 border-b border-gray-100">
-                    <p class="text-sm text-gray-500 italic">Bienvenido al panel,</p>
-                    <p id="user-display-email" class="text-xl font-medium text-gray-900 mt-1"></p>
-                </div>
+            <section id="vista-dashboard" class="hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                    
+                    <div class="space-y-6">
+                        <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 space-y-3">
+                            <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Galería del Estudio</h3>
+                            <div class="relative overflow-hidden bg-gray-200 rounded-lg h-48 flex items-center justify-center">
+                                <img id="slide-1" src="https://images.unsplash.com/photo-1563013544-824ae1d704d3?w=500&auto=format&fit=crop&q=60" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-100">
+                                <img id="slide-2" src="https://images.unsplash.com/photo-1511556532299-8f662fc26c06?w=500&auto=format&fit=crop&q=60" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0">
+                                <img id="slide-3" src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=500&auto=format&fit=crop&q=60" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-500 opacity-0">
+                                
+                                <button onclick="cambiarSlide(-1)" class="absolute left-2 bg-black/40 text-white p-1.5 rounded-full hover:bg-black/70 text-xs">❮</button>
+                                <button onclick="cambiarSlide(1)" class="absolute right-2 bg-black/40 text-white p-1.5 rounded-full hover:bg-black/70 text-xs">❯</button>
+                            </div>
+                        </div>
 
-                <div class="bg-gray-50 p-5 rounded-lg border border-gray-100 text-center">
-                    <h3 class="text-sm font-medium text-gray-800 uppercase tracking-wider mb-2">Evaluación Disponible</h3>
-                    <p class="text-xs text-gray-400">Tus respuestas ayudarán a identificar patrones de consumo digital.</p>
-                </div>
+                        <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 space-y-3">
+                            <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Video de Introducción</h3>
+                            <div class="relative overflow-hidden bg-black rounded-lg aspect-video flex items-center justify-center">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Presentación Mindbuy" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    </div>
 
-                <div class="pt-2 space-y-2">
-                    <button type="button" onclick="mostrarTest()" class="w-full bg-black text-white text-sm tracking-wider uppercase py-3 rounded-lg hover:bg-gray-800 transition shadow-md">
-                        Comenzar Test
-                    </button>
-                    <button type="button" onclick="cerrarSesion()" class="w-full bg-gray-100 text-gray-500 text-xs tracking-wider uppercase py-2 rounded-lg hover:bg-gray-200 transition">
-                        Cerrar Sesión
-                    </button>
+                    <div class="space-y-6">
+                        <div class="bg-gray-50 p-5 rounded-xl border border-gray-100 flex items-center space-x-4">
+                            <div class="bg-gray-200 h-12 w-12 rounded-full flex items-center justify-center text-gray-600 uppercase font-bold tracking-wider text-sm" id="avatar-inicial">
+                                U
+                            </div>
+                            <div>
+                                <span class="text-[10px] bg-gray-200 text-gray-600 px-2 py-0.5 rounded font-mono uppercase tracking-wide">Participante Activo</span>
+                                <p id="user-display-email" class="text-base font-medium text-gray-900 mt-1"></p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl border-2 border-gray-100 shadow-sm space-y-4">
+                            <div class="space-y-1">
+                                <h3 class="text-sm font-semibold text-gray-800 uppercase tracking-wider">Test de Hábitos de Compra</h3>
+                                <p class="text-xs text-gray-400 leading-relaxed">Por favor, responde con sinceridad. Esta evaluación toma aproximadamente 3 minutos y evalúa conductas en entornos comerciales digitales.</p>
+                            </div>
+
+                            <button type="button" onclick="mostrarTest()" style="background-color: #0C330C;" class="w-full text-white text-sm tracking-wider uppercase py-3 rounded-lg hover:opacity-90 transition font-medium shadow-md">
+                                Comenzar Cuestionario →
+                            </button>
+                        </div>
+
+                        <button type="button" onclick="cerrarSesion()" class="w-full bg-gray-100 text-gray-500 text-xs tracking-wider uppercase py-2.5 rounded-lg hover:bg-gray-200 transition text-center font-medium">
+                            Cerrar Sesión
+                        </button>
+                    </div>
+
                 </div>
             </section>
 
@@ -131,7 +162,28 @@
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         let usuarioActual = null;
 
+        // --- MANEJO DEL CARRUSEL DE FOTOS ---
+        let slideActual = 1;
+        const totalSlides = 3;
+
+        function cambiarSlide(direccion) {
+            document.getElementById(`slide-${slideActual}`).classList.replace('opacity-100', 'opacity-0');
+            slideActual += direccion;
+            if (slideActual > totalSlides) slideActual = 1;
+            if (slideActual < 1) slideActual = totalSlides;
+            document.getElementById(`slide-${slideActual}`).classList.replace('opacity-0', 'opacity-100');
+        }
+
         function irAVista(idVista) {
+            const contenedor = document.getElementById('contenedor-principal');
+            
+            // Adaptar el ancho de la ventana dependiendo del contenido para estética minimalista
+            if (idVista === 'vista-dashboard') {
+                contenedor.classList.replace('max-w-xl', 'max-w-5xl');
+            } else {
+                contenedor.classList.replace('max-w-5xl', 'max-w-xl');
+            }
+
             ['vista-login', 'vista-registro', 'vista-dashboard', 'vista-test'].forEach(id => document.getElementById(id).classList.add('hidden'));
             document.getElementById(idVista).classList.remove('hidden');
         }
@@ -139,19 +191,18 @@
         function irAPanelRegistro() { irAVista('vista-registro'); }
         function irAPanelLogin() { irAVista('vista-login'); }
 
-        // --- MODO DESARROLLADOR ARREGLADO (hex 0C330C y Salto Directo a Formulario) ---
+        // MODO DESARROLLADOR ARREGLADO DIRECTO
         function accesoDirectoPruebas() {
-            // Crea un usuario simulado local
-            usuarioActual = {
-                email: "sarita.desarrollo@mindbuy.com",
-                user_metadata: { nombre: "Sarita (Modo Pruebas)" }
-            };
-            document.getElementById('user-display-email').textContent = usuarioActual.user_metadata.nombre;
-            
-            // Salta directamente a la vista del cuestionario para probar las preguntas
-            irAVista('vista-test');
-            // Carga las preguntas
-            obtenerPreguntas();
+            usuarioActual = { email: "sarita.desarrollo@mindbuy.com", user_metadata: { nombre: "Sarita Rodriguez" } };
+            configurarPerfilYEntrar();
+        }
+
+        function configurarPerfilYEntrar() {
+            const nombre = usuarioActual.user_metadata.nombre || usuarioActual.email;
+            document.getElementById('user-display-email').textContent = nombre;
+            // Pone la primera letra del nombre en el avatar de la derecha
+            document.getElementById('avatar-inicial').textContent = nombre.charAt(0).toUpperCase();
+            irAVista('vista-dashboard');
         }
 
         async function registrarUsuario() {
@@ -162,7 +213,7 @@
             const err = document.getElementById('reg-error');
             
             if(!email || !password || !nombre) {
-                err.textContent = "Correo, Contraseña y Nombre son obligatorios.";
+                err.textContent = "Campos obligatorios incompletos.";
                 err.classList.remove('hidden'); return;
             }
             
@@ -171,7 +222,7 @@
             });
             
             if (error) { alert("Error: " + error.message); }
-            else { alert("¡Registro exitoso! Actívalo en Supabase si lo requiere e inicia sesión."); irAPanelLogin(); }
+            else { alert("¡Registro exitoso!"); irAPanelLogin(); }
         }
 
         async function iniciarSesion() {
@@ -184,8 +235,7 @@
                 document.getElementById('login-error').classList.remove('hidden');
             } else {
                 usuarioActual = data.user;
-                document.getElementById('user-display-email').textContent = usuarioActual.user_metadata.nombre || usuarioActual.email;
-                irAVista('vista-dashboard');
+                configurarPerfilYEntrar();
             }
         }
 
@@ -195,22 +245,28 @@
 
         async function obtenerPreguntas() {
             const container = document.getElementById('preguntas-container');
-            container.innerHTML = "Cargando preguntas de la tesis...";
-            const { data: preguntas } = await supabaseClient.from('preguntas').select('*');
+            container.innerHTML = '<p class="text-gray-400 text-sm text-center animate-pulse">Cargando cuestionario de tesis...</p>';
+            const { data: preguntas, error } = await supabaseClient.from('preguntas').select('*');
+            
+            if(error) {
+                container.innerHTML = "<p class='text-red-500 text-center text-sm'>Error al conectar con la tabla 'preguntas'.</p>";
+                return;
+            }
+            
             container.innerHTML = "";
             preguntas.forEach((p, i) => {
                 const div = document.createElement('div');
-                div.className = "border-b pb-4";
-                div.innerHTML = `<label class="block text-sm font-medium mb-2">${i+1}. ${p.texto_pregunta}</label>
-                <select class="w-full bg-gray-50 border p-2 rounded-lg text-sm">
+                div.className = "border-b border-gray-100 pb-4";
+                div.innerHTML = `<label class="block text-sm font-medium text-gray-700 mb-2">${i+1}. ${p.texto_pregunta}</label>
+                <select class="w-full bg-gray-50 border border-gray-200 p-2.5 rounded-lg text-sm text-gray-600 focus:outline-none">
                     <option>Nunca</option><option>A veces</option><option>Frecuentemente</option><option>Siempre</option>
                 </select>
-                <span class="text-[10px] bg-gray-100 px-2 py-0.5 rounded mt-2 inline-block uppercase">${p.categorías || 'Métrica'}</span>`;
+                <span class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded mt-2 inline-block uppercase tracking-wide font-mono">${p.categorías || 'Métrica'}</span>`;
                 container.appendChild(div);
             });
         }
 
-        function enviarResultados() { alert("Resultados de tesis enviados. ¡Gracias!"); irAVista('vista-dashboard'); }
+        function enviarResultados() { alert("Resultados guardados correctamente en la investigación. ¡Gracias!"); irAVista('vista-dashboard'); }
         window.onload = function() { irAVista('vista-login'); };
     </script>
 </body>
