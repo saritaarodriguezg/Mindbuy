@@ -5,28 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mindbuy - Consumo Responsable</title>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col p-4 md:p-8">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Reenie+Beanie&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 
-    <div id="contenedor-principal" class="max-w-xl mx-auto w-full bg-white p-6 md:p-8 rounded-xl shadow-sm border border-gray-100 my-auto transition-all duration-300">
+    <style>
+        /* Estilos Tipográficos Personalizados basados en tu diseño de Canva */
+        .font-joshico {
+            font-family: 'Playfair Display', serif;
+            font-weight: 500;
+            letter-spacing: -0.02em;
+        }
+        .font-brittany {
+            font-family: 'Reenie Beanie', cursive;
+            font-size: 3.5rem;
+            line-height: 0.5;
+            display: inline-block;
+            transform: rotate(-2deg);
+        }
+        .font-body {
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
+</head>
+<body style="background-color: #fffbf7;" class="text-gray-800 font-body min-h-screen flex flex-col p-4 md:p-8">
+
+    <div id="contenedor-principal" class="max-w-xl mx-auto w-full bg-white p-6 md:p-8 rounded-xl shadow-sm border border-orange-50/50 my-auto transition-all duration-300">
         
-        <header class="mb-8 text-center">
-            <h1 class="text-3xl font-light tracking-widest text-gray-900">MINDBUY</h1>
-            <p class="text-xs text-gray-400 mt-2 uppercase tracking-wider">Identifica tus hábitos de compra digital</p>
+        <header class="mb-8 text-center flex flex-col items-center justify-center relative">
+            <div class="w-16 h-16 mb-2 text-[#0C330C] flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-full h-full transform hover:scale-105 transition-transform">
+                    <path d="M12 2C6.48 2 2 6.48 2 12c0 1.54.36 2.98.98 4.29L3 16.5c.34-.31.74-.53 1.2-.64.55-.13 1.13-.03 1.63.26.83.48 1.15 1.52.73 2.39-.23.49-.65.84-1.15 1-.41.13-.84.11-1.24-.04.48.56 1.05 1.05 1.68 1.44.42-.42.98-.67 1.6-.67 1.38 0 2.5 1.12 2.5 2.5 0 .09-.01.18-.02.26 1.14.33 2.34.5 3.59.5 6.63 0 12-5.37 12-12S18.63 2 12 2zm1.25 5.5c0-.69.56-1.25 1.25-1.25s1.25.56 1.25 1.25-.56 1.25-1.25 1.25-1.25-.56-1.25-1.25zm-4.5 3c0-.69.56-1.25 1.25-1.25s1.25.56 1.25 1.25-.56 1.25-1.25 1.25-1.25-.56-1.25-1.25zm-.75 5.25c0-.69.56-1.25 1.25-1.25s1.25.56 1.25 1.25-.56 1.25-1.25 1.25-1.25-.56-1.25-1.25zm7.25.5c0-.69.56-1.25 1.25-1.25s1.25.56 1.25 1.25-.56 1.25-1.25 1.25-1.25-.56-1.25-1.25z"/>
+                </svg>
+            </div>
+            
+            <div class="relative py-2 select-none">
+                <span class="text-4xl text-gray-900 font-joshico">Mind</span>
+                <span class="text-[#0C330C] font-brittany ml-1">Buy</span>
+            </div>
+            <p class="text-[10px] text-gray-400 mt-3 uppercase tracking-widest font-medium">Investigación de Consumo Digital</p>
         </header>
 
         <main>
             <section id="vista-login" class="space-y-4">
-                <h2 class="text-sm font-medium text-gray-700 uppercase tracking-wider text-center mb-6">Ingreso al Estudio</h2>
+                <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider text-center mb-6">Ingreso al Estudio</h2>
                 
                 <div class="space-y-3">
                     <div>
                         <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Correo Electrónico</label>
-                        <input type="email" id="login-email" placeholder="ejemplo@correo.com" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
+                        <input type="email" id="login-email" placeholder="ejemplo@correo.com" class="w-full bg-gray-50/50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Contraseña</label>
-                        <input type="password" id="login-password" placeholder="Tu contraseña" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
+                        <input type="password" id="login-password" placeholder="Tu contraseña" class="w-full bg-gray-50/50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
                     </div>
                 </div>
 
@@ -42,31 +74,31 @@
                     
                     <div class="pt-4 border-t border-dashed border-gray-200 mt-4">
                         <button type="button" onclick="accesoDirectoPruebas()" style="background-color: #0C330C;" class="w-full text-white text-xs tracking-wider uppercase py-2 rounded-lg hover:opacity-90 transition font-medium shadow-sm">
-                            ♡ Modo Desarrollador: Ir Directo a Formulario
+                            ⚡ Modo Desarrollador: Ir Directo a Formulario
                         </button>
                     </div>
                 </div>
             </section>
 
             <section id="vista-registro" class="space-y-4 hidden">
-                <h2 class="text-sm font-medium text-gray-700 uppercase tracking-wider text-center mb-6">Registro de Nuevo Usuario</h2>
+                <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider text-center mb-6">Registro de Nuevo Usuario</h2>
                 
                 <div class="space-y-3">
                     <div>
                         <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Nombre Completo</label>
-                        <input type="text" id="reg-nombre" placeholder="Nombre Apellido" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
+                        <input type="text" id="reg-nombre" placeholder="Nombre Apellido" class="w-full bg-gray-50/50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Ocupación</label>
-                        <input type="text" id="reg-ocupacion" placeholder="Ej: Estudiante" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
+                        <input type="text" id="reg-ocupacion" placeholder="Ej: Estudiante" class="w-full bg-gray-50/50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Correo de Acceso</label>
-                        <input type="email" id="reg-email" placeholder="usuario@correo.com" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
+                        <input type="email" id="reg-email" placeholder="usuario@correo.com" class="w-full bg-gray-50/50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
                     </div>
                     <div>
                         <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Contraseña</label>
-                        <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
+                        <input type="password" id="reg-password" placeholder="Mínimo 6 caracteres" class="w-full bg-gray-50/50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
                     </div>
                 </div>
 
@@ -163,7 +195,6 @@
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         let usuarioActual = null;
 
-        // MANEJO DEL CARRUSEL DE FOTOS
         let slideActual = 1;
         const totalSlides = 3;
 
@@ -178,7 +209,6 @@
         function irAVista(idVista) {
             const contenedor = document.getElementById('contenedor-principal');
             
-            // Si entra al Dashboard, expandimos el ancho y removemos el centrado vertical estricto para habilitar scroll suave hacia abajo
             if (idVista === 'vista-dashboard') {
                 contenedor.classList.replace('max-w-xl', 'max-w-3xl');
                 contenedor.classList.remove('my-auto');
@@ -192,14 +222,12 @@
             ['vista-login', 'vista-registro', 'vista-dashboard', 'vista-test'].forEach(id => document.getElementById(id).classList.add('hidden'));
             document.getElementById(idVista).classList.remove('hidden');
             
-            // Regresa el scroll al inicio de la página automáticamente al cambiar de pantalla
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
         function irAPanelRegistro() { irAVista('vista-registro'); }
         function irAPanelLogin() { irAVista('vista-login'); }
 
-        // MODO DESARROLLADOR DIRECTO
         function accesoDirectoPruebas() {
             usuarioActual = { email: "sarita.desarrollo@mindbuy.com", user_metadata: { nombre: "Sarita Rodriguez" } };
             configurarPerfilYEntrar();
@@ -208,7 +236,7 @@
         function configurarPerfilYEntrar() {
             const nombre = usuarioActual.user_metadata.nombre || usuarioActual.email;
             document.getElementById('user-display-email').textContent = nombre;
-            document.getElementById('avatar-inicial').textContent = fontLetraAvatar = nombre.charAt(0).toUpperCase();
+            document.getElementById('avatar-inicial').textContent = nombre.charAt(0).toUpperCase();
             irAVista('vista-dashboard');
         }
 
