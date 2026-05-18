@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mindbuy - Consumo Responsable</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col justify-between p-6 md:p-12">
 
@@ -30,27 +29,40 @@
         Proyecto de Investigación — Bogotá, D.C.
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <script>
-        // === PASO IMPORTANTE: REEMPLAZA ESTOS DATOS CON LOS DEL PASO 1 ===
+        // === REEMPLAZA ESTOS DATOS CON TUS LLAVES REALES DE SUPABASE ===
         const SUPABASE_URL = 'sb_publishable_XSIjXMnLdTcVsgpFEp48KQ_AXD4VC5O';
         const SUPABASE_KEY = 'sb_secret_95lBPg0ryuO_f7SRajKJXg_oqltj7hI';
         
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        let supabaseClient;
+
+        // Inicialización segura de Supabase
+        try {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        } catch (e) {
+            console.error("Error al inicializar Supabase:", e);
+            document.getElementById('preguntas-container').innerHTML = `<p class="text-red-500 text-center text-sm">Error crítico: No se pudo cargar el cliente de la base de datos.</p>`;
+        }
 
         // Función para leer las preguntas desde Supabase
         async function obtenerPreguntas() {
-            const { data: preguntas, error } = await supabase
+            if (!supabaseClient) return;
+
+            const { data: preguntas, error } = await supabaseClient
                 .from('preguntas')
                 .select('*');
 
             if (error) {
-                document.getElementById('preguntas-container').innerHTML = `<p class="text-red-500 text-center">Error al conectar con Supabase.</p>`;
+                document.getElementById('preguntas-container').innerHTML = `<p class="text-red-500 text-center text-sm">Error al conectar con las tablas de Supabase.</p>`;
                 console.error(error);
                 return;
             }
 
-            if (preguntas) {
-                const container = document.getElementById('preguntas-container');
+            const container = document.getElementById('preguntas-container');
+            
+            if (preguntas && preguntas.length > 0) {
                 container.innerHTML = preguntas.map((p, index) => `
                     <div class="border-b border-gray-100 pb-4">
                         <label class="block text-sm font-medium text-gray-700 mb-2">${index + 1}. ${p.texto_pregunta}</label>
@@ -60,19 +72,20 @@
                             <option value="3">Frecuentemente</option>
                             <option value="4">Siempre</option>
                         </select>
-                        <span class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded mt-1 inline-block uppercase tracking-wide">${p.categoria}</span>
+                        <span class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded mt-2 inline-block uppercase tracking-wide font-mono">${p.categoria}</span>
                     </div>
                 `).join('');
+            } else {
+                container.innerHTML = `<p class="text-amber-500 text-center text-sm">No se encontraron preguntas en la tabla de Supabase.</p>`;
             }
         }
 
         function enviarResultados() {
-            alert("¡Test completado! Gracias por participar en el estudio.");
-            // Aquí guardaremos las respuestas en la siguiente fase
+            alert("¡Test completado! Gracias por participar en el estudio de Mindbuy.");
         }
 
-        // Ejecutar al cargar la página
-        obtenerPreguntas();
+        // Ejecutar la carga cuando todo el HTML esté listo
+        window.onload = obtenerPreguntas;
     </script>
 </body>
 </html>
