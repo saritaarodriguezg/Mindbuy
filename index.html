@@ -8,20 +8,75 @@
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col justify-between p-6 md:p-12">
 
-    <div class="max-w-xl mx-auto w-full bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+    <div class="max-w-xl mx-auto w-full bg-white p-8 rounded-xl shadow-sm border border-gray-100 my-auto">
+        
         <header class="mb-10 text-center">
             <h1 class="text-3xl font-light tracking-widest text-gray-900">MINDBUY</h1>
             <p class="text-xs text-gray-400 mt-2 uppercase tracking-wider">Identifica tus hábitos de compra digital</p>
         </header>
 
         <main>
-            <div id="preguntas-container" class="space-y-6">
-                <p id="loading-text" class="text-gray-400 text-sm text-center animate-pulse">Conectando con la base de datos...</p>
-            </div>
+            <section id="vista-auth" class="space-y-4">
+                <h2 class="text-sm font-medium text-gray-700 uppercase tracking-wider text-center mb-6">Ingreso al Estudio</h2>
+                
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Correo Electrónico</label>
+                        <input type="email" id="auth-email" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 uppercase tracking-wider mb-1">Contraseña</label>
+                        <input type="password" id="auth-password" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-lg p-2.5 focus:ring-1 focus:ring-black focus:outline-none">
+                    </div>
+                </div>
 
-            <button onclick="enviarResultados()" class="w-full mt-8 bg-black text-white text-sm tracking-wider uppercase py-3 rounded-lg hover:bg-gray-800 transition shadow-md">
-                Finalizar Evaluación
-            </button>
+                <p id="auth-error" class="text-red-500 text-xs text-center hidden"></p>
+
+                <div class="pt-4 space-y-2">
+                    <button onclick="iniciarSesion()" class="w-full bg-black text-white text-sm tracking-wider uppercase py-3 rounded-lg hover:bg-gray-800 transition">
+                        Iniciar Sesión
+                    </button>
+                    <button onclick="registrarUsuario()" class="w-full bg-white text-gray-600 border border-gray-200 text-sm tracking-wider uppercase py-3 rounded-lg hover:bg-gray-50 transition">
+                        Crear Cuenta nueva
+                    </button>
+                </div>
+            </section>
+
+            <section id="vista-dashboard" class="space-y-6 hidden">
+                <div class="text-center py-4 border-b border-gray-100">
+                    <p class="text-sm text-gray-500">Bienvenido(a) al panel de control,</p>
+                    <p id="user-display-email" class="text-base font-medium text-gray-900 font-mono mt-1"></p>
+                </div>
+
+                <div class="bg-gray-50 p-5 rounded-lg border border-gray-100 text-center space-y-2">
+                    <h3 class="text-sm font-medium text-gray-800 uppercase tracking-wider">Test de Hábitos de Compra</h3>
+                    <p class="text-xs text-gray-400">Esta evaluación toma alrededor de 3 minutos y mide tus conductas en entornos digitales.</p>
+                </div>
+
+                <div class="pt-2 space-y-2">
+                    <button onclick="mostrarTest()" class="w-full bg-black text-white text-sm tracking-wider uppercase py-3 rounded-lg hover:bg-gray-800 transition shadow-md">
+                        Comenzar Evaluación
+                    </button>
+                    <button onclick="cerrarSesion()" class="w-full bg-gray-100 text-gray-500 text-xs tracking-wider uppercase py-2 rounded-lg hover:bg-gray-200 transition">
+                        Cerrar Sesión
+                    </button>
+                </div>
+            </section>
+
+            <section id="vista-test" class="hidden">
+                <div id="preguntas-container" class="space-y-6">
+                    <p id="loading-text" class="text-gray-400 text-sm text-center animate-pulse">Conectando con la base de datos...</p>
+                </div>
+
+                <div class="pt-8 space-y-2">
+                    <button onclick="enviarResultados()" class="w-full bg-black text-white text-sm tracking-wider uppercase py-3 rounded-lg hover:bg-gray-800 transition shadow-md">
+                        Finalizar Evaluación
+                    </button>
+                    <button onclick="volverAlDashboard()" class="w-full bg-white text-gray-400 text-xs tracking-wider uppercase py-2 hover:text-gray-600 transition text-center block">
+                        Volver al Panel
+                    </button>
+                </div>
+            </section>
         </main>
     </div>
 
@@ -32,28 +87,101 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
-        // === COLOCA AQUÍ TUS DATOS CORRECTOS ===
-        // 1. Aquí debes poner la dirección web que empieza con https://
+        // === CREDENCIALES DE TU PROYECTO CONECTADO ===
         const SUPABASE_URL = 'https://qrwahxiakrrdzoizdyab.supabase.co'; 
-        
-        // 2. Tu llave anon 
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFyd2FoeGlha3JyZHpvaXpkeWFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3Njk0MDcsImV4cCI6MjA5NDM0NTQwN30.c-4IwsN44pAVd05PU6IavPeDOEm0Irb_kopXrOzS1Gc';
         
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        // Variables globales de control
+        let usuarioActual = null;
+
+        // --- CONTROL DE NAVEGACIÓN ENTRE VISTAS ---
+        function irAVista(idVista) {
+            document.getElementById('vista-auth').classList.add('hidden');
+            document.getElementById('vista-dashboard').classList.add('hidden');
+            document.getElementById('vista-test').classList.add('hidden');
+            
+            document.getElementById(idVista).classList.remove('hidden');
+        }
+
+        // --- AUTENTICACIÓN: REGISTRO ---
+        async function registrarUsuario() {
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            const errorTxt = document.getElementById('auth-error');
+            errorTxt.classList.add('hidden');
+
+            if(!email || !password) {
+                errorTxt.textContent = "Por favor completa todos los campos.";
+                errorTxt.classList.remove('hidden');
+                return;
+            }
+
+            const { data, error } = await supabaseClient.auth.signUp({ email, password });
+
+            if (error) {
+                errorTxt.textContent = `Error: ${error.message}`;
+                errorTxt.classList.remove('hidden');
+            } else {
+                alert("¡Cuenta creada con éxito! Ya puedes iniciar sesión.");
+            }
+        }
+
+        // --- AUTENTICACIÓN: LOGIN ---
+        async function iniciarSesion() {
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            const errorTxt = document.getElementById('auth-error');
+            errorTxt.classList.add('hidden');
+
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                errorTxt.textContent = "Credenciales incorrectas o usuario no registrado.";
+                errorTxt.classList.remove('hidden');
+            } else {
+                usuarioActual = data.user;
+                document.getElementById('user-display-email').textContent = usuarioActual.email;
+                irAVista('vista-dashboard');
+            }
+        }
+
+        // --- AUTENTICACIÓN: LOGOUT ---
+        async function cerrarSesion() {
+            await supabaseClient.auth.signOut();
+            usuarioActual = null;
+            document.getElementById('auth-email').value = "";
+            document.getElementById('auth-password').value = "";
+            irAVista('vista-auth');
+        }
+
+        // --- FLUJO DEL CUESTIONARIO ---
+        function mostrarTest() {
+            irAVista('vista-test');
+            obtenerPreguntas(); // Llama a la función que extrae las preguntas de Supabase
+        }
+
+        function volverAlDashboard() {
+            irAVista('vista-dashboard');
+        }
+
+        // --- OBTENER PREGUNTAS DESDE SUPABASE ---
         async function obtenerPreguntas() {
+            const container = document.getElementById('preguntas-container');
+            container.innerHTML = '<p id="loading-text" class="text-gray-400 text-sm text-center animate-pulse">Conectando con la base de datos...</p>';
+
             const { data: preguntas, error } = await supabaseClient
                 .from('preguntas')
                 .select('*');
 
             if (error) {
-                document.getElementById('preguntas-container').innerHTML = `<p class="text-red-500 text-center text-sm">Error al conectar con las tablas de Supabase.</p>`;
+                container.innerHTML = `<p class="text-red-500 text-center text-sm">Error al conectar con las tablas de Supabase.</p>`;
                 console.error(error);
                 return;
             }
 
-            const container = document.getElementById('preguntas-container');
-            container.innerHTML = ""; // Limpiamos el texto de carga
+            container.innerHTML = ""; 
 
             if (preguntas && preguntas.length > 0) {
                 preguntas.forEach((p, index) => {
@@ -96,10 +224,14 @@
         }
 
         function enviarResultados() {
-            alert("¡Test completado! Gracias por participar en el estudio de Mindbuy.");
+            alert(`¡Test completado, ${usuarioActual.email}! Gracias por participar en el estudio de Mindbuy.`);
+            irAVista('vista-dashboard');
         }
 
-        window.onload = obtenerPreguntas;
+        // Al cargar la página por primera vez, asegurar que inicie en la pantalla de Login
+        window.onload = function() {
+            irAVista('vista-auth');
+        };
     </script>
 </body>
 </html>
