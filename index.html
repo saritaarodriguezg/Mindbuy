@@ -195,19 +195,6 @@ a{color:inherit;text-decoration:none}
 .scroll-track{width:80px;height:1px;background:rgba(255,255,255,.2);position:relative;overflow:hidden}
 .scroll-thumb{height:100%;background:rgba(255,255,255,.7);width:20%;transition:left .4s var(--ease);position:absolute}
 
-/* ═══════════════════════════
-   DASHBOARD — STATS ROW
-═══════════════════════════ */
-.stats-section{max-width:1120px;margin:-38px auto 0;padding:0 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;position:relative;z-index:10}
-.stat-card{background:var(--white);border-radius:var(--r-lg);padding:22px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:3px;border-top:3px solid transparent;transition:transform var(--t),box-shadow var(--t)}
-.stat-card:hover{transform:translateY(-4px);box-shadow:var(--sh-lg)}
-.stat-card.c-moss{border-top-color:var(--moss-light)}
-.stat-card.c-earth{border-top-color:var(--earth)}
-.stat-card.c-sage{border-top-color:var(--sage)}
-.stat-card.c-amber{border-top-color:var(--amber)}
-.stat-icon{font-size:1.4rem;margin-bottom:4px}
-.stat-val{font-family:var(--font-disp);font-size:2.2rem;font-weight:400;line-height:1;color:var(--ink)}
-.stat-label{font-size:.73rem;font-weight:500;color:var(--ink3);letter-spacing:.03em;text-transform:uppercase;margin-top:3px}
 
 /* ═══════════════════════════
    VIDEO SECTION
@@ -693,7 +680,7 @@ a{color:inherit;text-decoration:none}
         </div>
       </div>
 
-      <!-- PANEL 5 — EN EL MUNDO -->
+      <!-- PANEL 5 — BOGOTÁ CONSCIENTE -->
       <div class="h-panel" data-index="4">
         <img class="h-panel-img" src="underconsumption 2.jpg" alt="En el Mundo"/>
         <div class="h-panel-overlay"></div>
@@ -713,14 +700,6 @@ a{color:inherit;text-decoration:none}
       <div class="scroll-track"><div class="scroll-thumb" id="scroll-thumb"></div></div>
       <span>→</span>
     </div>
-  </div>
-
-  <!-- STATS ROW -->
-  <div class="stats-section">
-    <div class="stat-card c-moss"><div class="stat-icon">🌸</div><div class="stat-val" id="st1">0</div><div class="stat-label">Mindbuy</div></div>
-    <div class="stat-card c-earth"><div class="stat-icon">🌿</div><div class="stat-val" id="st2">0</div><div class="stat-label">Creado para ayudar</div></div>
-    <div class="stat-card c-sage"><div class="stat-icon">🌷</div><div class="stat-val" id="st3">0</div><div class="stat-label">Metas activas</div></div>
-    <div class="stat-card c-amber"><div class="stat-icon">☘</div><div class="stat-val" id="st4">—</div><div class="stat-label">Última puntuación</div></div>
   </div>
 
   <!-- VIDEO SECTION -->
